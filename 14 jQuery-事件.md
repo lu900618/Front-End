@@ -1,6 +1,6 @@
 ---
 date: 2017-07-12 17:50
-status: private
+status: public
 title:jQuery事件
 author:32401545@qq.com
 ---
@@ -10,28 +10,26 @@ jQuery事件
 ## 添加事件
   为一个元素添加多个事件
   ```js
-  $("#btn").click(function(){
-    console("今天天气真好");
-  });
-  $("#btn").mouseenter(function(){
+  // bind 为元素绑定多个事件
+  $("#btn").bind("click", function(){
+    console.log("今天热死了");
+  }).bind("mouseenter", function(){
     $(this).css("backgroundColor","red");
-  });
-  $("#btn").mouseleave(function(){
+  }).bind("mouseleave", function(){
     $(this).css("backgroundColor","");
   });
   ```
   ```js
-  // 链式编程
-  $("#btn").click(function(){
-    console("今天天气真好");
-  }).mouseenter(function(){
-    $(this).css("backgroundColor","red");
-  }).mouseleave(function(){
-    $(this).css("backgroundColor","");
-  });
+  // bind 为元素绑定多个事件 参数为json
+  $("#btn").bind({
+    "click": function(){console.log("今天热死了");},
+    "mouseenter": function(){$(this).css("backgroundColor","red");}, 
+    "mouseleave": function(){$(this).css("backgroundColor","");}
+  });  
   ```
   ```js
   // delegate("元素", "事件名", 响应函数);
+  // 找到父级元素, 添加这个方法, 为里面的子元素添加事件
   $("#dv").delegate("p","click",function () {
     console.log("p被点击了");
   });
@@ -43,33 +41,24 @@ jQuery事件
   });
   ```
   ```js
+  // on("事件名", 响应函数);
+  $("#btn").on("click",function () {
+    console.log("我是p,被点了");
+  });
+  ```
+  ```js
   $("#btn").on({
-    "click": function(){console("今天热死了");},
+    "click": function(){console.log("今天热死了");},
     "mouseenter": function(){$(this).css("backgroundColor","red");}, 
     "mouseleave": function(){$(this).css("backgroundColor","");}
   });
-  // on的其他用法与delegate相同, 参数位置不同
+  // 前两种绑定事件的方式都是调用on方法
   ```
-## 绑定事件
-  ```js
-  // bind 为元素绑定多个事件
-  $("#btn").bind("click", function(){
-    console("今天热死了");
-  }).bind("mouseenter", function(){
-    $(this).css("backgroundColor","red");
-  }).bind("mouseleave", function(){
-    $(this).css("backgroundColor","");
-  });
-  ```
-  ```js
-  // bind 为元素绑定多个事件 参数为json
-  $("#btn").bind({
-    "click": function(){console("今天热死了");},
-    "mouseenter": function(){$(this).css("backgroundColor","red");}, 
-    "mouseleave": function(){$(this).css("backgroundColor","");}
-  });  
-  ```
+
 ## 移除事件
+  `bind-->unbind`
+  `delegate-->undelegate`
+  `on-->off`
 
 ## 浏览器事件
 1. `.resize()` 当浏览器改变大小时, window元素绑定的resize事件将被触发
@@ -86,7 +75,7 @@ jQuery事件
    });
    ```
 
-## 表单事件
+## 常见事件
 1. `.blur()`失去焦点
 2. `.change()` 用于`<input>`, `<textarea>`和`<select>`元素
 3. `.click()`鼠标点击事件

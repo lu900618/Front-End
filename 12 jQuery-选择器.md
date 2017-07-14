@@ -81,3 +81,18 @@
 1. :enabled | :disabled 
 2. :checked 单选框、复选框
 3. :selected select中的option，`$("option:selected")`
+
+## 属性过滤选择器
+1. `[attr]` 含有指定属性的元素
+  ```js
+  $("input[placeholder]"]);
+  ```
+2. `[attr=value]` 含有指定属性的**值**的元素
+  ```js
+  $("input[type=button]"]);
+  ```
+3. `[attr!=value]` 属性的值**不等于**指定值的元素
+4. `[attr^=value]` 属性的值**以指定值开头**的元素
+5. `[attr$=value]` 属性的值**以指定值结束**的元素
+6. `[attr*=value]` 属性的值**包含**指定值结束的元素
+7. `[attr1] [attr2] [attr3] [...]` 筛选**多个**指定属性的元素
