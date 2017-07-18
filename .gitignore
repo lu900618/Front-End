@@ -1,1 +1,15 @@
-·¶Ğ¡·¹±Ê¼Ç.xmind
+ï»¿# IntelliJ IDEA Project files
+.idea
+*.iml
+*.ipr
+*.iws
+
+# vscode
+.vscode
+
+ignore/
+èŒƒå°é¥­ç¬”è®°.xmind
+
+.DS_Store
+Thumbs.db
+desktop.ini
