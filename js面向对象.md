@@ -1,15 +1,13 @@
 ---
 title: js面向对象
 date: 2017年8月17日 18:58:05
-updated: 2017年8月22日 20:39:20
+updated: 2017年8月27日 09:27:20
 ---
 # 面向对象
 
-## js 面向对象
+## JavaScript 中的数据类型
 
-### JavaScript 中的数据类型
-
-#### 值类型和引用类型复制
+### 值类型和引用类型复制
 
 ```javascript
 var foo = 'bar'  // 存的是值
@@ -36,7 +34,7 @@ console.log(obj, obj1)
   保存引用类型的变量保存的并**不是对象本身**, 而是一个指向该对象的指针
   从一个变量向另一个变量复制引用类型的值的时候, 复制的是**引用指针**, 因此两个变量指向的是同一个对象.
 
-#### 值类型和引用类型参数传递
+### 值类型和引用类型参数传递
 
 ```javascript
 var a = 123
@@ -59,7 +57,7 @@ console.log(a, b)  // 123, Object{foo: 'bbb'}
 + 基本类型数据: 按值传递
 + 引用类型数据: 按引用传递
 
-#### 深拷贝与浅拷贝
+### 深拷贝与浅拷贝
 
 + 浅拷贝
 
@@ -122,13 +120,13 @@ console.log(a, b)  // 123, Object{foo: 'bbb'}
   ```
   ![](images/js/深拷贝与浅拷贝.png)
 
-#### 类型检测
+### 类型检测
 
 + `typeof`
 + `instanceof` -- 引用类型推荐使用
 + `Object.prototype.toString.call()` -- 可能存在写代码时造成的原型丢失问题.
 
-### javascript执行过程
+## javascript执行过程
 
 + 预解析
 
@@ -141,9 +139,9 @@ console.log(a, b)  // 123, Object{foo: 'bbb'}
 
 + 执行
 
-### 面向对象 - 创建对象
+## 面向对象 - 创建对象
 
-#### 简单方式
+### 简单方式
 
   直接通过 `new Object()` 创建
   ```javascript
@@ -167,7 +165,7 @@ console.log(a, b)  // 123, Object{foo: 'bbb'}
   ```
   存在的问题: 生成多个 `person` 的实例对象, 代码过于冗余, 重复性太高
 
-#### 工厂函数
+### 工厂函数
 
   ```javascript
   function createPerson (name, age) {
@@ -185,7 +183,7 @@ console.log(a, b)  // 123, Object{foo: 'bbb'}
   ```
   通过工厂模式解决了创建多个相似对象代码冗余的问题, 但是也带来了新的问题 -- *使用工厂模式无法判断对象的类型*, 与字面量没什么不同, 都是 `Object`
 
-#### 构造函数
+### 构造函数
 
 ```javascript
 function Person (name, age) {
@@ -292,7 +290,7 @@ console.log(p2.constructor === Person)
 console.log(p1 instanceof Person)
 ```
 
-##### 构造函数和实例对象的关系
+#### 构造函数和实例对象的关系
 
 **每一个实例对象中都有一个 `constructor` 属性, 改属性指向创建该实例的构造函数.**
 
@@ -312,7 +310,7 @@ p2 instanceof Peson // true
 + 每一个实例对象都有一个 `constructor` 属性, 改属性指向创建该实例的构造函数
 + 可以通过实例的 `constructor` 属性来判断实例与构造函数之间的关系
 
-##### 构造函数的问题
+#### 构造函数的问题
 
 ```javascript
 function Person(name, age) {
@@ -373,9 +371,9 @@ console.log(p1.sayHello === p2.sayHello) // => true
 console.log(p1.sayAge === p2.sayAge) // => true
 ```
 
-#### 原型
+### 原型
 
-##### 更好的解决办法 `prototype`
+#### 更好的解决办法 `prototype`
 
 javascript规定: 每一个构造函数内部都有一个 `prototype` 属性, 该属性指向另一个对象. 这个对象的**所有属性和方法, 都会被构造函数的实例继承**.
 我们可以把所有对象实例需要共享的属和方法直接定义在 `prototype` 对象上.
@@ -402,7 +400,7 @@ console.log(p1.sayHello === p2.sayHello)  // true
 
 所有实例的 `type` 属性和 `sayHello` 方法, 指向的都是同一内存地址 -- `prototype` 对象
 
-##### 构造函数、实例、原型三者之间的关系
+#### 构造函数、实例、原型三者之间的关系
 
 每创建一个函数, 系统就会为这个函数自动分配一个 prototype 指针, 指向他的原型对象. 这个原型对象包含两个部分( `constructor` 和 `__proto__` ) 其中 `constructor` 指向函数自身
 
@@ -424,7 +422,7 @@ p.__proto__ === Person.prototype  // true
 ![](images/js/proto.png)
 ![](images/js/关系.png)
 
-### 面向对象 - 基本特性
+## 面向对象 - 基本特性
 
 + 抽象性
   -- 只有在具体的环境中对象才可以表示具体的事物
@@ -437,13 +435,13 @@ p.__proto__ === Person.prototype  // true
 + 多态性
   -- 调用同一个方法, 根据传入的参数不同, 得到不同的结果
 
-### 面向对象 - Error 对象
+## 面向对象 - Error 对象
 
-#### 异常的概念
+### 异常的概念
 
 在代码运行的过程中, 得到与预期不同的结果
 
-#### 处理异常
+### 处理异常
 
 语法
 
@@ -455,13 +453,13 @@ try {
 }
 ```
 
-#### 异常对象的传递
+### 异常对象的传递
 
 代码出现异常, 那么异常后面的代码不再执行, 将错误传递给调用该函数的函数, 直至传到最顶层.
 
 如果有 `try - catch` 那么出现异常后会执行 `catch` 中异常处理的代码
 
-#### 异常对象
+### 异常对象
 
 在出现异常的时候, 异常出现的位置以及异常的类型, 内容等数据都会被封装起来, 以一个对象的形式传递给 `catch` 语句中的参数 `e` ,用户可以使用 `throw 异常对象` 抛出异常, 或者 `new Error(e)`得到异常信息.
 
@@ -474,7 +472,7 @@ try {
 }
 ```
 
-### 面向对象 - DOM对象
+## 面向对象 - DOM对象
 
 HTML中所有的节点都是对象
 
@@ -489,9 +487,9 @@ HTML中所有的节点都是对象
 i 标签也是一个对象
 "添加很好" 也是一个对象
 
-### 面向对象 - 继承
+## 面向对象 - 继承
 
-#### 原型继承
+### 原型继承
 
 对象 `p` 中没有 `sayHello` 方法, 因为构造函数 `Person` 中什么都没有
 但是 `p` 连接到*原型*中了, 因此 `p` 就可以调用 `sayHello` 方法
@@ -508,8 +506,8 @@ i 标签也是一个对象
     this.gender = gender;
   }
   Person.prototype.sayHello = function () {
-    console.log( '你好, 我是 ' + this.name );
-  };
+    console.log( '你好, 我是 ' + this.name )
+  }
   ```
 
 + 替换原型
@@ -529,9 +527,33 @@ i 标签也是一个对象
   p.sayHello()
   ```
 
++ 不推荐的写法
+
+  ```javascript
+  function Person (name, age, gender) {
+    this.name = name;
+    this.age = age;
+    this.gender = gender;
+  }
+  Person.prototype.sayHello = function () {
+    console.log( '你好, 我是 ' + this.name )
+  }
+  function Teacher (name, age, gender){
+    Person.call(this, name, age, gender)
+  }
+  Teacher.prototype = Person.prototype // 不推荐 修改 Teacher.prototype 会修改所有继承自 Person 的对象的原型方法
+  ```
+
++ 推荐的写法
+
+  ```javascript
+  Teacher.prototype = new Person()
+  // TODO: 执行修改 Teacher.prototype 操作
+  ```
+
 + `Object.create()` 方法
 
-  Object.create(proto [, propertiesObject ]) 是E5中提出的一种新的对象创建方式，第一个参数是要继承的原型，如果不是一个子函数，可以传一个null，第二个参数是对象的属性描述符，这个参数是可选的。
+  Object.create(proto [, propertiesObject ]) 是ES5中提出的一种新的对象创建方式，第一个参数是要继承的原型，如果不是一个子函数，可以传一个null，第二个参数是对象的属性描述符，这个参数是可选的。
 
   ```javascript
   function Car (desc) {
@@ -641,4 +663,255 @@ i 标签也是一个对象
   </html>
   ```
 
-#### 混合继承
+### 混合继承
+
+## 函数
+
+函数也是对象, 所有的函数都是 `Function` 的实例.
+
+所有函数的 `__protot__` 都指向 `Function.prototype`, 包括 `Function`, 即:
+
+```javascript
+function fn () {}
+
+fn.__proto__ === Function.prototype  // true
+Function.__proto__ === Function.prototypr /// true
+
+```
+
+> Function.prototype.__proto__ === Object.prototype
+
+### 函数的参数
+
+#### length 属性
+
+在javascript中, 创建了一个函数就是创建了一个对象. 函数与一般数据一样使用 -- 赋值, 调用
+函数作为对象有一个 length 属性, 改属性**用于描述创建函数时参数的个数**.
+
+#### arguments 对象
+
+在调用函数的时候, 会给函数参数, 但在函数定义的时候, 有时候不确定要传入多少参数, 所有在调用时传入的参数都会被 arguments 获取到, 也就是说 -- arguments 中存储的是参数的集合
+
+```javascript
+function a () {
+  console.log(arguments.length)
+}
+a()           // 0
+a(1)          // 1
+a(1,2,3,'4')  // 4
+```
+
+> 如何判断调用时的参数个数与函数定义时的参数个数一样?
+> `函数名.length === arguments.length`
+
+### 函数的预解析
+
+在javascript预解析的时候, 同名的函数与变量以函数为准.
+已经预解析过得函数, 在代码执行过程中会*略过*
+
+```javascript
+console.log(typeof fn) // function
+
+// 在执行阶段，这里对 fn 重新赋值为 123 了
+var fn = 123
+
+// 函数声明最大的特性就是：具有函数提升
+function fn() {
+  console.log('hello')
+}
+
+console.log(typeof fn) // function number
+
+```
+
+### 函数的表达式
+
+函数的表达式类似于变量赋值, 只有变量提升, **没有函数提升**
+
+```javascript
+fn()    // 报错 VM277:1 Uncaught ReferenceError: fn is not defined
+console.log(typeof fn) // undefined 函数表达式只有变量提升
+
+var fn = function () {
+  console.log('hello')
+}
+
+fn()    // hello
+```
+
+### new Function
+
+执行效率低, 很少用.
+
+```javascript
+var add = new Function('x', 'y', 'return x + y')
+var ret = add(10, 30)
+
+console.log(ret)
+
+```
+
+## 作用域
+
+### 块级作用域
+
+所谓的块, 就是代码的逻辑机构, 其中使用 `{}` 包含的就是语句块. 例如:
+
+```javascript
+if (true) {
+  // 语句1
+  // 语句2
+  // 语句3
+}
+```
+
+这里的 `{}`就是语句块
+
+块级作用域是指: 从变量定义开始, 到变量所在的语句块结束, 在这样一个范围内可以被使用.
+
+在块级作用域内 本块级的变量可以访问父级块内的变量, 反之不行.
+
+如果子块和父块变量重名, 那么会在定义该变量时隐藏父块中的变量.在子块中定义的变量的改变, 不会影响父块中的变量, 离开子块后, 父块中的变量可以继续使用.
+
+但是, **在javascript中没有块级作用域**, 所有声明的变量的作用据就是当前函数范围内, 或者全局.
+
+### 词法作用域
+
+词法作用域, 指的是变量的访问规则按照词法定义的规则进行使用, 也就是**只有函数才可以限定作用域**.
+
+访问变量从当前作用域开始往上进行查找 -- 不是代码的书写顺序
+
+### 问题
+
+```javascript
+var condition = true
+if (condition) {
+  // var foo = 'bar'
+  function fn() {
+    console.log('hello')
+  }
+} else {
+  function fn() {
+    console.log('world')
+  }
+}
+fn()
+// 因为在javascript中, 没有块级作用域, 所以 {} 内声明的都是全局
+// 低版本(IE10以下)浏览器会先进性函数提升 -- 执行结果是 world
+```
+
+```javascript
+// 对于上面的方式，建议使用函数表达式来处理就可以了
+// 因为函数表达式没有函数提升
+var condition = true
+var fn
+if (condition) {
+  // var foo = 'bar'
+  fn = function () {
+    console.log('hello')
+  }
+} else {
+  fn = function () {
+    console.log('world')
+  }
+}
+
+fn()
+
+```
+
+### 变量的访问规则
+
+### javascript的执行原理
+
+### 作用域链
+
+## this
+
+|调用方式|非严格模式|备注|
+|---|---|---|
+|普通函数调用|window|严格模式下是 undefined|
+|构造函数调用|实例对象|原型方法中 this 也是实例对象|
+|对象方法调用|该方法所属对象|紧挨着的对象|
+|事件绑定方法|绑定事件对象||
+|定时器函数|window||
+
+### call & apply
+
+`apply` 和 `call` 的方法作用是一模一样的，都是用来改变方法的 `this` 关键字，并且把方法执行；而且在严格模式下和非严格模式，对于第一个参数时null/undefined，这样的情况下，也是一样的。
+
+```javascript
+// call在给fn传递参数的时候，是一个一个传递值的 call在给fn传递参数的时候，是一个一个传递值的
+fn.call(obj, 100, 200);
+
+// 而apply不是一个个的传递，而是把要给fn传递的参数值统一的放在一个数组中进行操作
+// 但是也相当于一个一个的给fn的参数赋值
+fn.apply(obj, [100, 200]);
+
+```
+
+```javascript
+var a = {
+  user:"追梦子",
+  fn:function(){
+      console.log(this.user); //追梦子
+  }
+}
+var b = a.fn;
+b.call(a);
+```
+
+通过在call方法，给第一个参数添加要把b添加到哪个环境中，简单来说，this就会指向那个对象。
+
+call方法除了第一个参数以外还可以添加多个参数，如下：
+
+```javascript
+var a = {
+  user:"追梦子",
+  fn:function(e,ee){
+    console.log(this.user); //追梦子
+    console.log(e+ee); //3
+  }
+}
+var b = a.fn;
+b.call(a,1,2);
+
+```
+
+> 注意如果call和apply的第一个参数写的是null，那么this指向的是window对象
+
+```javascript
+var a = {
+  user:"追梦子",
+  fn:function(){
+    console.log(this); //Window {external: Object, chrome: Object, document: document, a: Object, speechSynthesis: SpeechSynthesis…}
+  }
+}
+var b = a.fn;
+b.apply(null);
+
+```
+
+```javascript
+var keith = {
+    rascal: 123
+  };
+
+  var rascal = 456;
+
+  function a() {
+    console.log(this.rascal);
+  }
+
+  a(); //456
+  a.call(); //456
+  a.call(null); //456
+  a.call(undefined); //456
+  a.call(this); //456
+  a.call(keith); //123
+
+```
+
+### bind
+
+## 闭包
