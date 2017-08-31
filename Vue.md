@@ -3,27 +3,95 @@ create: 2017年8月22日 08:58:05
 status: public
 title: Vue笔记
 author: 32401545@qq.com
-
 ---
 # Vue
 
+## MVVM
+
+![](images/vue/mvvm.png)
+
+Model: 数据 -- 负责数据存储 对应前端就是 javascript对象
+
+View: 视图 -- 负责页面展示 对应前端就是 DOM 对象
+
+ViewModel: 连接视图和数据的中间件
+
+在 MVVM 下, 数据和视图是不能直接通讯的, 需要通过 ViewModel 进行通讯, ViewModel 通常要实现一个 observe 观察者, 当 数据 发生变化, observe 能观察到这种变化, 然后通知到对应的 视图 做出更新; 当用户操作视图, observe 也能观察到相应的变化, 然后通知数据做改动 -- 这就是数据的**双向绑定**
+
+## vue-cli
+
+### 安装
+
+```bash
+npm install -g vue-cli
+```
+
+### 测试
+
+```bash
+vue -V # 测试是否安装成功
+```
+
+结果
+
+```bash
+2.8.2 # 安装的 vue 的版本号
+```
+
+### 搭建第一个项目
+
+```bash
+vue init webpack helloworld
+```
+
+webpack 是官方模板
+helloworld 是项目名称
+
+依次按提示输入
+
+```bash
+? Project name helloworld # 指的是 package.json 中的项目名
+? Project description A Vue.js project
+? Author lu900618 <32401545@qq.com>
+? Vue build standalone
+? Install vue-router? Yes
+? Use ESLint to lint your code? No
+? Setup unit tests with Karma + Mocha? No
+? Setup e2e tests with Nightwatch? No
+# 等待
+# 完成后会显示以下提示
+  vue-cli · Generated "helloworld".
+
+  To get started:
+
+    cd helloworld
+    npm install
+    npm run dev
+```
+
+一次输入命令, 浏览器会自动弹出, 显示页面.
+
+### 项目文件夹说明
+
+![项目文件夹说明](images/vue/项目文件夹说明.png)
+
 ## Vue指令
 
-### `{{ }}`
+### `{ { } }`
 
 ```html
 <div id="app">
   <div>
     <input type="text" v-model="name">
-    <span>你的名字叫: {{ name }}</span>
+    <span>你的名字叫: { { name } }</span>
   </div>
   <div>
     <input type="text" v-model="age">
-    <span>你的年龄是: {{ age }}</span>
+    <span>你的年龄是: { { age } }</span>
   </div>
   <div>
     <input type="text" v-model="sex">
-    <span v-show="sex">你的性别是: {{ sex }}</span>
+    <span v-show="sex">你的性别是: { { sex } }</span>
     <!-- 
     v-show  和  v-if 的区别 
     如果 sex 的值不存在, 都可以达到显示的作用
@@ -52,16 +120,16 @@ var app = new Vue({
 
 在控制台修改 `app.name` 实例也随之更新
 
-`{{ }}` 中支持简单的 `javascript` 表达式:
+`{ { } }` 中支持简单的 `javascript` 表达式:
 
-+ `{{ number + 1 }}`
-+ `{{ true ? 'yes' : 'no' }}`
-+ `{{ message.split('').reverse().join('') }}`
++ `{ { number + 1 } }`
++ `{ { true ? 'yes' : 'no' } }`
++ `{ { message.split('').reverse().join('') } }`
 
-`{{ }}` 中不支持:
+`{ { } }` 中不支持:
 
-+ `{{ var a = 1 }}`
-+ `{{ if (true) { return true }}}`
++ `{ { var a = 1 } }`
++ `{ { if (true) { return true } }}`
 
 ### v-for
 
@@ -71,7 +139,7 @@ var app = new Vue({
 <div id="app">
   <ul>
     <li v-for="food in foodList">
-      {{ food.name }}:&yen{{ food.discount ? food.price * food.discount : food.price}}
+      { { food.name } }:&yen{ { food.discount ? food.price * food.discount : food.price} }
     </li>
   </ul>
   <!-- 
@@ -99,7 +167,25 @@ var app = new Vue({
 })
 ```
 
+需要索引写法:
+
+```html
+<div v-for="(item, index) in items"></div>
+<div v-for="(val, key) in user"></div>
+<div v-for="(val, key, index) in user"></div>
+```
+
+需要主键: `:key`
+
+```html
+<div v-for="item in items" :key="item.id">
+  {{ item.text }}
+</div>
+```
+
 ### v-bind
+
+可以给 HTML 元素或者动态组件**动态**地绑定一个或多个特性, 如动态绑定 style 和 class
 
 用法: `v-bind:属性名="属性值"`
 
@@ -114,7 +200,7 @@ tips: `v-bind:` 可以简写成 `:`
     <img :src="img">
   </a>
   <!-- 
-    注意: url 没有被 {{ }} 包裹
+    注意: url 没有被 { { } } 包裹
     浏览器解析后不会显示 v-bind
     -->
 </div>
@@ -132,7 +218,52 @@ var app = new Vue({
 })
 ```
 
+### v-text v-html
+
+解决网速特别慢时, 表达式闪烁
+
+不能单独使用, 必须配合某一个标签元素
+
+```html
+<div id="app">
+  <span v-text="name"></span>
+  <div v-html="name"></div>
+</div>
+<script>
+  new Vue({
+    el: '#app',
+    data: {
+      name: 'zhangsan'
+    }
+  })
+</script>
+```
+
+区别: 能否解析标签, 使用 v-html 渲染数据可能会导致 XSS（跨站脚本） 攻击
+
+### v-cloak
+
+v-cloak 指令保持在元素上直到关联实例结束编译后自动移除，v-cloak  和 CSS 规则如 [v-cloak] { display: none } 一起用时，这个指令可以隐藏未编译的 Mustache 标签直到实例准备完毕。
+
+通常用来防止{{}}表达式闪烁问题
+
+```html
+<style>
+  [v-cloak] { display: none } 
+</style>
+<span v-cloak>{{msg}}</span>
+<script> 
+  new Vue({
+    data:{
+        msg:'hello ivan'
+      }
+  })
+</script>
+```
+
 ### v-on
+
+绑定事件监听，表达式可以是一个方法的名字或一个内联语句，如果没有修饰符也可以省略，用在普通的html元素上时，只能监听 原生 DOM 事件。用在自定义元素组件上时，也可以监听子组件触发的自定义事件。
 
 用法:
 
@@ -143,6 +274,25 @@ tips:
 
 + `v-on` 可以简写为 `@`
 + 事件函数要写在 methods 参数选项中
+
+常用事件:
+
++ v-on:click
++ v-on:keydown
++ v-on:keyup
++ v-on:mousedown
++ v-on:mouseover
++ v-on:submit
++ ....
+
+v-on 提供了很多事件修饰符来辅助实现一些功能:
+
++ `.stop` - 调用 event.stopPropagation()。
++ `.prevent` - 调用 event.preventDefault()。
++ `.capture` - 添加事件侦听器时使用 capture 模式。
++ `.self` - 只当事件是从侦听器绑定的元素本身触发时才触发回调。
++ `.{keyCode | keyAlias}` - 只当事件是从侦听器绑定的元素本身触发时才触发回调。
++ `.native` - 监听组件根元素的原生事件。
 
 ```html
 <div id="app">
@@ -226,7 +376,7 @@ var app = new Vue({
   多空格在 HTML 中只显示一个空格, 但是在数据库中会远洋存储
   <pre> 按原格式显示
    -->
-  <pre>{{ name }}</pre>
+  <pre>{ { name } }</pre>
 </div>
 ```
 
@@ -255,7 +405,7 @@ var app = new Vue({
     <input type="radio" value="female" v-model="sex">
   </label>
   <br>
-  {{sex}}
+  { {sex} }
 </div>
 ```
 
@@ -272,7 +422,7 @@ var app = new Vue({
     <input type="checkbox" value="female" v-model="hobby">
   </label>
   <br>
-  {{hobby}}
+  { {hobby} }
 </div>
 ```
 
@@ -292,17 +442,21 @@ var app = new Vue({
   <select v-model="from">
     <option value="1">hkong</option>
     <option value="2">dlu</option>
-  </select> {{ from }}
+  </select> { { from } }
   <hr>
   <div>你要去哪里?</div>
   <select v-model="to" multiple>
     <option value="1">hkong</option>
     <option value="2">dlu</option>
-  </select> {{ to }}
+  </select> { { to } }
 </div>
 ```
 
 ### v-if
+
+作用：根据表达式的值的真假条件来决定是否渲染元素.
+如果条件为false不渲染（达到隐藏元素的目的），为true则渲染。
+在切换时元素及它的数据绑定被销毁并重建
 
 ```html
 <div id="app">
@@ -326,6 +480,28 @@ var app = new Vue({
   }
 })
 ```
+
+### v-show
+
+根据表达式的真假值，切换元素的 display CSS 属性，如果为 false ，则在元素上添加 display:none 来隐藏元素，否则移除 display:none 实现显示元素
+
+```html
+<h1 v-show="isShow">Yes</h1>
+
+new Vue({
+  data:{
+    isShow:true
+  }
+});
+
+```
+
+v-if 和 v-show 的区别：
+
+  v-if 和 v-show 都能够实现对一个元素的隐藏和显示操作,
+
+  但是 v-if是将这个元素添加或者移除到dom中，
+  而v-show 是在这个元素上添加 style="display:none"和移除它来控制元素的显示和隐藏的
 
 ### 计算属性
 
@@ -358,11 +534,11 @@ var app = new Vue({
     </tr>
     <tr>
       <td>总分</td>
-      <td>{{ sum }}</td>
+      <td>{ { sum } }</td>
     </tr>
     <tr>
       <td>平均分</td>
-      <td>{{ averange }}</td>
+      <td>{ { averange } }</td>
     </tr>
   </tbody>
 </table>
@@ -387,9 +563,9 @@ var app = new Vue({
 })
 ```
 
-### 组件
+## 组件
 
-#### 全局定义组件
+### 全局定义组件
 
 `Vue.component(标签名, 内容)` 在 HTML 中 Vue 接管的范围内都可以使用
 
@@ -404,7 +580,7 @@ Vue.component('alert', {
 })
 ```
 
-#### 局部定义组件
+### 局部定义组件
 
 ```javascript
 new Vue({
@@ -422,7 +598,7 @@ new Vue({
 })
 ```
 
-#### demo
+### demo
 
 ```html
 <div id="app">
@@ -431,14 +607,14 @@ new Vue({
 
 <template id="like-component-tpl">
   <button :class="{liked:liked}" @click="toggle_like">
-  👍  {{ likeCount }}
+  👍  { { likeCount } }
   </button>
 </template>
 ```
 
 ```javascript
 Vue.component('like', {
-  // template: '<button :class="{liked:liked}" @click="toggle_like">👍  {{ likeCount }}</button>',
+  // template: '<button :class="{liked:liked}" @click="toggle_like">👍  { { likeCount } }</button>',
   // template 内容过长可以使用 es6 模板字符串
   // 也可以定义在 HTML 中模板 这里传选择器
   template: '#like-component-tpl',

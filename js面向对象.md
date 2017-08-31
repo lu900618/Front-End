@@ -68,23 +68,23 @@ console.log(a, b)  // 123, Object{foo: 'bbb'}
       key1:"11111"
   }
   function copy(p) {
-      var c = {};
+      var c = {}
       for (var i in p) {
-      　　c[i] = p[i];
+      　　c[i] = p[i]
       }
-      return c;
-  　　}
-  a.key2 = ['小辉','小辉'];
-  var b = copy(a);
-  　b.key3 = '33333';
-  alert(b.key1);     //11111
-  alert(b.key3);    //33333
-  alert(a.key3);    //undefined
-  alert(a.key2);    // ['小辉','小辉']
-  alert(b.key2);    // ['小辉','小辉']
-  b.key2.push("大辉");
-  alert(b.key2);    //小辉，小辉，大辉
-  alert(a.key2);    //小辉，小辉，大辉
+      return c
+  }
+  a.key2 = ['小辉','小辉']
+  var b = copy(a)
+  b.key3 = '33333'
+  alert(b.key1)     //11111
+  alert(b.key3)    //33333
+  alert(a.key3)    //undefined
+  alert(a.key2)    // ['小辉','小辉']
+  alert(b.key2)    // ['小辉','小辉']
+  b.key2.push("大辉")
+  alert(b.key2)    //小辉，小辉，大辉
+  alert(a.key2)    //小辉，小辉，大辉
   ```
 
 + 深拷贝
@@ -124,7 +124,7 @@ console.log(a, b)  // 123, Object{foo: 'bbb'}
 
 + `typeof`
 + `instanceof` -- 引用类型推荐使用
-+ `Object.prototype.toString.call()` -- 可能存在写代码时造成的原型丢失问题.
++ `Object.prototype.toString.call()` 
 
 ## javascript执行过程
 
@@ -286,7 +286,7 @@ console.log(p2.constructor === Person)
 
 // instanceof 操作符也可以用来判断实例与构造函数的关系
 // constructor 和 instanceof 都可以用来判断实例与构造函数的关系
-// 但是跟建议使用 instanceof
+// 但是更建议使用 instanceof
 console.log(p1 instanceof Person)
 ```
 
@@ -376,6 +376,7 @@ console.log(p1.sayAge === p2.sayAge) // => true
 #### 更好的解决办法 `prototype`
 
 javascript规定: 每一个构造函数内部都有一个 `prototype` 属性, 该属性指向另一个对象. 这个对象的**所有属性和方法, 都会被构造函数的实例继承**.
+
 我们可以把所有对象实例需要共享的属和方法直接定义在 `prototype` 对象上.
 
 ```javascript
@@ -389,7 +390,7 @@ console.log(Person.prototype)
 Person.prototype.type = 'human'
 
 Person.prototype.sayHello = function(){
-  console.log('helloi ' + this.name)
+  console.log('hello ' + this.name)
 }
 
 var p1 = new Person(...)
@@ -501,9 +502,9 @@ i 标签也是一个对象
 
   ```javascript
   function Person ( name, age, gender ) {
-    this.name = name;
-    this.age = age;
-    this.gender = gender;
+    this.name = name
+    this.age = age
+    this.gender = gender
   }
   Person.prototype.sayHello = function () {
     console.log( '你好, 我是 ' + this.name )
@@ -514,9 +515,9 @@ i 标签也是一个对象
 
   ```javascript
   function Person ( name, age, gender ) {
-    this.name = name;
-    this.age = age;
-    this.gender = gender;
+    this.name = name
+    this.age = age
+    this.gender = gender
   }
   Person.prototype = {
     constructor: Person // 最好手动添加 constructor 的指向
@@ -531,9 +532,9 @@ i 标签也是一个对象
 
   ```javascript
   function Person (name, age, gender) {
-    this.name = name;
-    this.age = age;
-    this.gender = gender;
+    this.name = name
+    this.age = age
+    this.gender = gender
   }
   Person.prototype.sayHello = function () {
     console.log( '你好, 我是 ' + this.name )
@@ -557,18 +558,18 @@ i 标签也是一个对象
 
   ```javascript
   function Car (desc) {
-      this.desc = desc;
-      this.color = "red";
+      this.desc = desc
+      this.color = "red"
   }
   Car.prototype = {
       getInfo: function() {
-        return 'A ' + this.color + ' ' + this.desc + '.';
+        return 'A ' + this.color + ' ' + this.desc + '.'
       }
-  };
+  }
   //instantiate object using the constructor function
-  var car =  Object.create(Car.prototype);
-  car.color = "blue";
-  alert(car.getInfo()); // A blue undefined.
+  var car =  Object.create(Car.prototype)
+  car.color = "blue"
+  alert(car.getInfo()) // A blue undefined.
   ```
 
   `propertiesObject` 参数的详细解释：（默认都为false）
@@ -665,11 +666,46 @@ i 标签也是一个对象
 
 ### 混合继承
 
+将原型链和借用构造函数混合使用
+
+```javascript
+function SuperType (name) {
+  this.name = name
+  this.colors = ['red', 'blue', 'green']
+}
+SuperType.prototype.sayName = function () {
+  window.alert(this.name)
+}
+function SubType (name, age) {
+  SuperType.call(this, name)
+  this.age = age
+}
+
+// 继承方法
+SubType.prototype = new SuperType()
+SubType.prototype.sayAge = function () {
+  window.alert(this.age)
+}
+
+var instance1 = new SubType('Nicholas', 29)
+instance1.colors.push('black')
+window.alert(instance1.colors) // red,blue,green,black
+instance1.sayName() // Nicholas
+instance1.sayAge() // 29
+
+var instance2 = new SubType('Greg', 27)
+window.alert(instance2.colors) // red,blue,green
+instance2.sayName() // Greg
+instance2.sayAge() // 27
+```
+
+[更多继承说明](http://www.cnblogs.com/yangjinjin/archive/2013/02/01/2889563.html)
+
 ## 函数
 
 函数也是对象, 所有的函数都是 `Function` 的实例.
 
-所有函数的 `__protot__` 都指向 `Function.prototype`, 包括 `Function`, 即:
+所有函数的 `__proto__` 都指向 `Function.prototype`, 包括 `Function`, 即:
 
 ```javascript
 function fn () {}
@@ -679,7 +715,7 @@ Function.__proto__ === Function.prototypr /// true
 
 ```
 
-> Function.prototype.__proto__ === Object.prototype
+> Function.prototype.\_\_proto__ === Object.prototype
 
 ### 函数的参数
 
@@ -704,6 +740,137 @@ a(1,2,3,'4')  // 4
 > 如何判断调用时的参数个数与函数定义时的参数个数一样?
 > `函数名.length === arguments.length`
 
+##### 将伪数组转为数组
+
++ 声明一个空数组，通过遍历伪数组把它们重新添加到新的数组中
+
+  ```javascript
+  var list = document.querySelectorAll('li')
+  var res = []
+  list.forEach(function(item, i){
+    res.push(item)
+  })
+  ```
+  > 伪数组 `NodeList` 没有 `forEach` 方法, 但是通过 `document.querySelectorAll()` 返回的伪数组有这个方法
+
++ 使用数组的slice()方法 它返回的是数组，使用call或者apply指向伪数组
+
+  ```javascript
+  var res = Array.prototype.slice.call(list)
+  ```
+  ```javascript
+  // 模拟 slice 的实现
+  Array.prototype.mySlice = function () {
+    // 参数为 0 个, 则从 0 截到最后
+    // 参数为 1 个, 则从 第一个参数开始的索引 截到最后
+    // 参数为 2 个, 则从 第一个参数开始的索引 截到第二个参数截止的索引
+    var start = 0
+    var end = this.length
+
+    arguments.length === 1 && (start = arguments[0])
+    arguments.length === 2 && (start = arguments[0], end = arguments[1])
+
+    var tmp = []
+    for(var i = start; i < end; i++) {
+      tmp.push(this[i])
+    }
+    return tmp
+  }
+  ```
+
++ 使用原型继承
+
+  ```javascript
+  list.__proto__ = Array.prototype
+  ```
+
++ ES6中数组的新方法 from()
+
+  ```javascript
+  var res = Array.from(list)
+  ```
+
++ jq的makeArray()，toArray()方法 它们也可以实现伪数组转数组的功能，但是实现的原理并不太一样
+
+  ```javascript
+  // core_deletedIds = []
+  // core_slice = core_deletedIds.slice
+  // core_push = core_deletedIds.push
+
+  // makeArray: 使用了数组的slice方法
+  toArray: function () {
+    return core_slice.call(this)
+  }
+
+  // makeArray:使用了push方法
+  makeArray: function (arr, result) {
+    var ret = result || []
+
+    if (arr != null) {
+      if (isArraylike(object(arr))) {
+        jQuery.merge(ret,
+          typeof arr === 'string' ? [arr] : arr
+        )
+      } else {
+        core_push.call(ret, arr)
+      }
+    }
+    return ret
+  }
+  ```
+
+##### callee 属性
+
++ `callee` 返回正在执行的函数本身的引用, 他是 **arguments 的一个属性**
+
+  ```javascript
+  arguments.callee === fn  // true
+  ```
+
++ `callee` 有一个 length 属性, 可以获得形参的个数. 因此可以用来比较形参与实参个数是否一致.
+
+  ```javascript
+  arguments.length === arguments.callee.length
+  ```
+
++ 可以用来递归匿名函数
+
+  ```javascript
+  var sum = function(n){
+    if (n <= 1) return 1
+    else return n + arguments.callee(n - 1)
+  }
+  ```
+
+#### caller
+
+caller 返回一个函数的引用, 这个函数调用了当前的函数
+
+使用这个属性要注意:
+
++ 这个属性只有在函数执行时才有作用
++ 如果在 javascript 程序中, 函数是顶层调用的, 返回 null
+
+```javascript
+var a = function() {
+  alert(a.caller)
+}
+var b = function() {
+  a()
+}
+b()
+```
+
+代码中, `b` 调用了 `a`, 所以 `a.caller` 返回的是 `b` 的引用, 结果如下:
+
+```javascript
+var b = function() {
+  a()
+}
+```
+
+如果直接调用 `a()` , 输出结果为: `null`
+
 ### 函数的预解析
 
 在javascript预解析的时候, 同名的函数与变量以函数为准.
@@ -726,7 +893,7 @@ console.log(typeof fn) // function number
 
 ### 函数的表达式
 
-函数的表达式类似于变量赋值, 只有变量提升, **没有函数提升**
+函数的表达式类似于变量赋值, 只有变量提升, **没有函数提升**, 必须**先声明, 再使用**
 
 ```javascript
 fn()    // 报错 VM277:1 Uncaught ReferenceError: fn is not defined
@@ -822,19 +989,197 @@ fn()
 
 ### 变量的访问规则
 
+**函数的作用域链以定义时所处的作用域为准, 而不是调用时.**
+
 ### javascript的执行原理
 
 ### 作用域链
 
 ## this
 
-|调用方式|非严格模式|备注|
-|---|---|---|
-|普通函数调用|window|严格模式下是 undefined|
-|构造函数调用|实例对象|原型方法中 this 也是实例对象|
-|对象方法调用|该方法所属对象|紧挨着的对象|
-|事件绑定方法|绑定事件对象||
-|定时器函数|window||
+`this` 的指向, 在**调用的时候才能确定**.
+
+| 调用方式   | 非严格模式   | 备注                |
+| ------ | ------- | ----------------- |
+| 普通函数调用 | window  | 严格模式下是 undefined  |
+| 构造函数调用 | 实例对象    | 原型方法中 this 也是实例对象 |
+| 对象方法调用 | 该方法所属对象 | 紧挨着的对象            |
+| 事件绑定方法 | 绑定事件对象  |                   |
+| 定时器函数  | window  |                   |
+
+### 普通函数调用
+
+```javascript
+function a(){
+  var user = "追梦子"
+  console.log(this.user) //undefined
+  console.log(this) //Window
+}
+a()
+```
+
+`a()` 相当于 `window.a()`, 在非严格下指向 `window`
+
+可以理解为 `window` 对象调用
+
+### 对象方法调用
+
+```javascript
+var o = {
+  user:"追梦子",
+  fn:function(){
+    console.log(this.user)  //追梦子
+  }
+}
+o.fn()
+```
+
+`this` 的指向是在调用的时候确定的, 这里的 `this` 指向对象 `o`
+
+```javascript
+var o = {
+  user:"追梦子",
+  fn:function(){
+    console.log(this.user) //追梦子
+  }
+}
+window.o.fn()
+
+```
+
+这里的 `this` 指向对象 `o`, 因为 `o` 相当于全局对象 `window` 的一个属性.
+
+如果一个函数中有this，这个函数中包含多个对象，尽管这个函数是被最外层的对象所调用，**this指向的也只是它上一级的对象**, 最终要看是哪个对象"点"出来的
+
+```javascript
+var o = {
+  a:10,
+  b:{
+    a:12,
+    fn:function(){
+      console.log(this.a) //undefined
+      console.log(this) //window
+    }
+  }
+}
+var j = o.b.fn
+j()
+
+```
+
+这里的 `this` 指向并不是 `b` 对象, 虽然函数 `fn` 是被对象 `b` 引用, 但是在将 `fn` 赋值给 `j` 的时候并没有执行, 所以在 `j` 执行的时候, `this` 的最终指向是 `window`
+
+### 构造函数调用
+
+```javascript
+function Fn(){
+  this.user = "追梦子"
+}
+var a = new Fn()
+console.log(a.user) //追梦子
+
+```
+
+构造函数内的 `this` 指向构造方法的实例 -- `a`
+
+创建实例时 `new` 改变了 `this` 的指向
+
+    使用 new 操作符. 这种方式调用构造函数会经历以下4个阶段:
+
+    1.创建一个新对象
+    2.将构造函数的作用域赋给新对象 -- this 指向新对象
+    3.执行构造函数中的代码
+    4.返回新对象
+
+当构造函数内有 `return` 时:
+
++ return 的值是值类型 不影响 this 指向
++ return 的值是引用类型:
+
+  ```javascript
+  function fn() {
+    this.user = '追梦子'
+    return {}  // return 空对象
+  }
+  var a = new fn
+  console.log(a.user)  //undefined
+  ```
+
+  ```javascript
+  function fn() {
+      this.user = '追梦子'
+      return function(){}  // 函数
+  }
+  var a = new fn
+  console.log(a.user) //undefined
+  ```
+
+  **如果返回值是一个对象，那么this指向的就是那个返回的对象，如果返回值不是一个对象那么this还是指向函数的实例**
+
+### 事件绑定方法
+
+```javascript
+document.getElementById('btn').onclick = function(){
+  console.log('btn 被点击了')
+}
+```
+
+事件处理函数不是用户来调用的，而是由系统来调用
+
+事件处理函数内部的 this 指向 **DOM 对象**
+
+### 定时器函数
+
+```javascript
+setTimeout(function(){
+  console.log('时间 +1s')
+}, 1000)
+
+```
+
+当时间到达，系统会去帮你调用这个函数, 所以，这个**定时器处理函数中的 this 指向的是 window**
+
+### demo
+
+```javascript
+function Foo(){
+  getName = function(){
+    alert(1)
+  }
+  return this
+}
+
+Foo.getName = function (){alert(2)}
+Foo.prototype.getName=function () {alert(3)}
+var getName = function (){ alert(4)}
+function getName(){alert(5)}
+
+// 写出下面的结果
+
+// 1 Foo.getName()
+// 2 getName()
+// 3 Foo().getName()
+// 4 new Foo.getName()
+// 5 new Foo().getName()
+// 6 new new Foo().getName()
+```
+
+> 点运算符、new运算符、函数执行这三者之间的优先级:
+> new A.B();  的逻辑是这样的：new  A.B ();
+> 点运算符优先于new运算符，看起来似乎仅仅如此。
+> new A().B();  的逻辑却是这样的：(new A()).B(); 而不是 new (A().B) ();
+> 区别在于A后面多了一对小括号，这个影响到了优先级顺序。
+
+```javascript
+//这两种写法是等价的
+var d = new A
+var d = new A()
+
+//但是下面这两种是不同的，不能混淆了：
+var d = new A.B(); //new A.B
+var d = new A().B(); //new A().B
+
+```
 
 ### call & apply
 
@@ -842,11 +1187,11 @@ fn()
 
 ```javascript
 // call在给fn传递参数的时候，是一个一个传递值的 call在给fn传递参数的时候，是一个一个传递值的
-fn.call(obj, 100, 200);
+fn.call(obj, 100, 200)
 
 // 而apply不是一个个的传递，而是把要给fn传递的参数值统一的放在一个数组中进行操作
 // 但是也相当于一个一个的给fn的参数赋值
-fn.apply(obj, [100, 200]);
+fn.apply(obj, [100, 200])
 
 ```
 
@@ -854,11 +1199,11 @@ fn.apply(obj, [100, 200]);
 var a = {
   user:"追梦子",
   fn:function(){
-      console.log(this.user); //追梦子
+      console.log(this.user) //追梦子
   }
 }
-var b = a.fn;
-b.call(a);
+var b = a.fn
+b.call(a)
 ```
 
 通过在call方法，给第一个参数添加要把b添加到哪个环境中，简单来说，this就会指向那个对象。
@@ -869,12 +1214,12 @@ call方法除了第一个参数以外还可以添加多个参数，如下：
 var a = {
   user:"追梦子",
   fn:function(e,ee){
-    console.log(this.user); //追梦子
-    console.log(e+ee); //3
+    console.log(this.user) //追梦子
+    console.log(e+ee) //3
   }
 }
-var b = a.fn;
-b.call(a,1,2);
+var b = a.fn
+b.call(a,1,2)
 
 ```
 
@@ -884,34 +1229,493 @@ b.call(a,1,2);
 var a = {
   user:"追梦子",
   fn:function(){
-    console.log(this); //Window {external: Object, chrome: Object, document: document, a: Object, speechSynthesis: SpeechSynthesis…}
+    console.log(this) //Window {external: Object, chrome: Object, document: document, a: Object, speechSynthesis: SpeechSynthesis…}
   }
 }
-var b = a.fn;
-b.apply(null);
+var b = a.fn
+b.apply(null)
 
 ```
 
 ```javascript
 var keith = {
-    rascal: 123
-  };
+  rascal: 123
+}
 
-  var rascal = 456;
+var rascal = 456
 
-  function a() {
-    console.log(this.rascal);
+function a() {
+  console.log(this.rascal)
+}
+
+a() //456
+a.call() //456
+a.call(null) //456
+a.call(undefined) //456
+a.call(this) //456
+a.call(keith) //123
+```
+
+**`call` 和 `apply` 可以用来借用其他函数的方法**
+
+```javascript
+var myMath = {
+  max: function () {
+    var max = arguments[0]
+    for (var i = 0; i < arguments.length; i++) {
+      if (arguments[i] > max) {
+        max = arguments[i]
+      }
+    }
+    return max
   }
+}
 
-  a(); //456
-  a.call(); //456
-  a.call(null); //456
-  a.call(undefined); //456
-  a.call(this); //456
-  a.call(keith); //123
+var arr = [32, 1, 32, 13, 2, 4321, 13, 21, 3]
+
+// 第一个参数用来指定内部 this 的指向
+// apply 会把传递的数组或伪数组展开, 一个一个传递到方法内部
+var max = myMath.max.apply(null, arr)
+console.log(max)
 
 ```
 
 ### bind
 
+`call`, `apply`, 和 `bind` 的区别:
+
++ `call`, `apply`, 和 `bind` 都可以改变很熟内部的指向
++ `call`, `函数apply` 在改变 `this` 指向的同时调用函数
+  + `call` 通过 `,` 作为分隔进行传参
+  + `apply` 通过传递一个数组或者伪数组传递参数
++ `bind` 改变函数内部 `this` 的指向, 但是他不调用, 而是**返回了一个指定了 `this` 环境的新函数**
+
+#### 绑定函数
+
+bind() 最简单的用法是创建一个函数, 使这个函数不论怎么调用都有同样的 `this` 值.
+
+常见的错误:
+
+```javascript
+var altwrite = document.write
+altwrite("hello")
+//1.以上代码有什么问题
+//2.正确操作是怎样的
+//3.bind()方法怎么实现
+```
+
+`altwrite` 改变了 `this` 的指向 `global` 或 `window` 对象, 导致执行时提示非法调用异常 `Uncaught TypeError: Illegal invocation`, 正确的使用方法:
+
+```javascript
+altwrite.bind(document)("hello")
+```
+
+或者
+
+```javascript
+altwrite.call(document, "hello")
+```
+
+常见的错误就像上面的例子一样, 讲方法从对象中拿出来, 然后调用, 并且希望 this 指向原来的对象. 如果不做特殊处理, 一般对象会丢失. 使用 bind() 方法可以很漂亮的解决这个问题.
+
+```javascript
+this.number = 9
+var module = {
+  num: 81,
+  getNum: function () {
+    return this.num
+  }
+}
+
+module.getNum()     // 81
+
+var getNum = module.getNum
+getNum()    // 9
+
+var boundGetNum = getNum.bind(module)
+boundGetNum()     // 81
+```
+
+#### 偏函数
+
+<!-- TODO -->
+
+#### 与 setTimeout 一起使用
+
+一般情况下,  setTimeout 的 this 会指向 global 或 window 对象. 当时用类的方法需要 this 指向实例, 就可以用 bind() 将 this 绑定到回调函数来管理实例.
+
+```javascript
+function Bloomer () {
+  this.petalCount = Math.ceil(Math.random() * 12) + 1
+}
+
+Bloomer.prototype.bloom = function () {
+  window.setTimeout(this.declare.bind(this), 1000)
+}
+
+Bloomer.prototype.declare = function () {
+  console.log(`我有 ${this.petalCount} 朵花瓣`)
+}
+
+```
+
+#### 绑定函数作为构造函数
+
+```javascript
+function Point(x, y) {
+  this.x = x
+  this.y = y
+}
+
+Point.prototype.toString = function() {
+  return this.x + ',' + this.y
+}
+
+var p = new Point(1, 2)
+p.toString() // '1,2'
+
+
+var emptyObj = {}
+var YAxisPoint = Point.bind(emptyObj, 0/*x*/)
+// 实现中的例子不支持,
+// 原生bind支持:
+var YAxisPoint = Point.bind(null, 0/*x*/)
+
+var axisPoint = new YAxisPoint(5)
+axisPoint.toString() // '0,5'
+
+axisPoint instanceof Point // true
+axisPoint instanceof YAxisPoint // true
+new Point(17, 42) instanceof YAxisPoint // true
+
+```
+
+上面例子中Point和YAxisPoint共享原型，因此使用instanceof运算符判断时为true。
+
+#### 捷径
+
+bind()也可以为需要特定this值的函数创造捷径。
+
+例如要讲一个类数组对象转换为真正的数组, 可能会写:
+
+```javascript
+var slice = Array.prototype.slice
+// ...
+slice.call(arguments)
+```
+
+使用 bind() 的话:
+
+```javascript
+var unboundSlice = Array.prototype.slice
+var slice = Function.prototype.call.bind(unboundSlice)
+// ...
+slice(arguments)
+```
+
+#### 参数
+
+bind() 可以传参数, 但是不调用
+bind() 以后得到的新函数也可以传参, 但在实际使用的时候, 会把在 bind() 时传递的参数和调用新函数传的参数进行合并, 然后作为函数的参数
+
+## 高阶函数
+
+高阶函数就是指:
+
++ 函数可以当做参数进行传递
++ 函数可以当做返回值进行返回
+
+### 作为参数传递
+
+**`ajax`**
+
+```javascript
+// callback为待传入的回调函数
+var getUserInfo = function(userId, callback) {
+  $.ajax("http://xxx.com/getUserInfo?" + userId, function(data) {
+    if (typeof callback === "function") {
+      callback(data)
+    }
+  })
+}
+
+getUserInfo(13157, function(data) {
+  alert (data.userName)
+})
+```
+
+**`Array.prototype.sort`**
+`Array.prototype.sort` 接收一个函数作为参数, 这个函数封装了数组元素的排序规则.
+
+```javascript
+//从小到大排列
+[1, 4, 3].sort(function(a, b) {
+    return a - b
+});
+// 输出: [1, 3, 4]
+
+//从大到小排列
+[1, 4, 3].sort(function(a, b) {
+    return b - a
+});
+// 输出: [4, 3, 1]
+```
+
+### 作为返回值返回
+
+判断数据类型
+
+```javascript
+// 以前的代码
+function isArray (obj) {
+  return Object.prototype.toString.call(obj) === '[object Array]'
+}
+
+function isObject (obj) {
+  return Object.prototype.toString.call(obj) === '[object Object]'
+}
+// ...
+
+```
+
+```javascript
+// 函数作为返回值的写法
+var isArray = generateCheckTypeFn('[object Array]')
+var isObject = generateCheckTypeFn('[object Object]')
+var isString = generateCheckTypeFn('[object String]')
+var isNumber = generateCheckTypeFn('[object Number]')
+
+function generateCheckTypeFn (type) {
+  return function (obj) {
+    return Object.propotype.toString.call(obj) === type
+  }
+}
+
+isArray([])     // true
+isNumber(NaN)     // true
+```
+
+[高阶函数的其他说明](http://www.cnblogs.com/laixiangran/p/5468567.html)
+
 ## 闭包
+
+闭包就是能够读取其它函数内部变量的函数
+
+由于在 javascript 中, 只有函数内部的子函数才能读取局部变量, incident可以把闭包简单理解为 "定义在函数内部的函数"
+
+在本质上, 闭包就是将函数内部和函数外部连接起来的一座桥梁.
+
+如果一个函数内部返回了一个函数或者多个函数, 而返回的函数中具有对自己的外层作用域中的成员的读取或者修改, 那么这个函数就成为**闭包函数**.
+
+如何访问闭包中的数据:
+
++ 利用返回值
++ 利用一个对象返回函数
++ 返回对象
+
+```javascript
+function fn () {
+  var foo = 'bar'
+
+  var getFoo = function () {
+    return foo
+  }
+
+  var setFoo = function (val) {
+    foo = val
+  }
+
+  return {
+    getFoo: getFoo,
+    setFoo: setFoo
+  }
+}
+
+var obj = fn()
+
+console.log(obj.getFoo())
+
+```
+
+示例代码:
+
+```javascript
+var arr = [10, 20, 30]
+
+for(var i = 0; i < arr.length; i++) {
+  arr[i] = (function (i) {
+    return function () {
+      console.log(i)
+    }
+  })(i)
+}
+
+arr.forEach(function (item, index) {
+  item()
+})
+```
+
+示例代码:
+
+```javascript
+console.log(111)
+
+for(var i = 0; i < 3; i++) {
+  // 定时器永远在普通代码的最后执行
+  // 哪怕时间是 0
+  setTimeout((function (i) {
+    return function () {
+      console.log(i)
+    }
+  })(i),0)
+}
+
+console.log(222)
+```
+
+### 沙箱模式
+
+利用匿名函数自执行保护内部成员不被外部修改或者访问
+
+```javascript
+;(function () {
+  var age = 3
+
+  function F () {
+  }
+
+  F.prototype.getAge = function () {
+    return age
+  }
+
+  F.prototype.setAge = function (val) {
+    if (val < 18) {
+      return console.log('age 不能小于18岁')
+    }
+    age = val
+  }
+
+  window.F = F
+})()
+
+var f = new F()
+console.log(f.getAge())
+```
+
+### 思考题1
+
+```javascript
+var name = 'The Window'
+
+var object = {
+  name: "My Object",
+  getNameFunc: function () {
+    return function () {
+      return this.name
+    }
+  }
+}
+
+console.log(object.getNameFunc()())
+
+```
+
+### 思考题2
+
+```javascript
+var name = 'The Window'
+
+var object = {
+  name: "My Object",
+  getNameFunc: function () {
+    var that = this
+    return function () {
+      return that.name
+    }
+  }
+}
+
+console.log(object.getNameFunc()())
+```
+
+## 递归
+
+### 深拷贝
+
+```javascript
+
+// 判断类型
+function getType(type) {
+  return function (obj) {
+    return Object.prototype.toString.call(obj) === `[object ${type}]`
+  }
+}
+
+function isArray(obj) {
+  return getType('Array')(obj)
+}
+
+function isObject(obj) {
+  return getType('Object')(obj)
+}
+// 循环拷贝
+function deepCopy(target, source) {
+  for (var key in source) {
+    if (source.hasOwnProperty(key)) {
+      var element = source[key];
+      if (isArray(element)) {
+        target[key] = []
+        deepCopy(target[key], element)
+      } else if (isObject(element)) {
+        target[key] = {}
+        deepCopy(target[key], element)
+      } else {
+        target[key] = element
+      }
+    }
+  }
+}
+```
+
+### 阶乘
+
+```javascript
+function factorial(number) {
+  if (number < 0) {
+    return
+  } else if (number < 2) {
+    return 1
+  } else {
+    return number * factorial(number - 1)
+  }
+}
+```
+
+以下代码会导致错误
+
+```javascript
+var fact = factorial
+fact = null
+fact(5)
+```
+
+解决办法: 使用 `callee`
+
+```javascript
+function factorial(number) {
+  if (number < 0) {
+    return
+  } else if (number < 2) {
+    return 1
+  } else {
+    return number * arguments.callee(number - 1)
+  }
+}
+var fact = factorial
+factorial = null
+console.log(fact)
+fact(5)
+```
+
+    `callee` 返回正在执行的函数本身的引用, `arguments.callee === fn  // true`
+
