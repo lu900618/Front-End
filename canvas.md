@@ -761,7 +761,7 @@ img.src = ''
 
 var img1 = new Image()
 img1.onload = function () {
-  console.log('加载完成)
+  console.log('加载完成')
 }
 img1.src = ''
 ```
