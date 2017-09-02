@@ -754,7 +754,7 @@ new Pie().render(data)
 // ie 在先设置 src 的情况下不能绑定 onload 事件
 var img = document.createElement('img')
 img.onload = function () {
-  console.log('加载完成)
+  console.log('加载完成')
 }
 img.src = ''
 
