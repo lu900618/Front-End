@@ -24,8 +24,8 @@ canvas 拥有多种绘制**路径**, **矩形**, **圆形**, **字符**以及**�
 
 #### 路径闭合
 
-+ 手动闭合
-+ 自动闭合
++ 手动闭合 -- 如果线的宽度比较大, 会有明显缺角
++ 自动闭合 -- 可以省略最后一条线
 
 #### 填充规则
 
@@ -38,6 +38,20 @@ ctx.beginPath()
 ```
 
 #### 设置样式
+
++ lineWidth 线宽，默认1px
++ lineCap 线末端类型：(butt默认)、round、square
++ lineJoin 相交线的拐点 miter(默认)、round、bevel
++ strokeStyle 线的颜色
++ fileStyle 填充颜色
++ setLineDash() 设置虚线
++ getLineDash() 获取虚线宽度集合
++ lineDashOffset 设置虚线偏移量（负值向右偏移）
+
+#### save 和 restore
+
++ save可以保存多个状态（用栈的方式存储：后进先出）
++ restore可以恢复上次保存的状态
 
 ##### 画笔的状态
 
