@@ -17,8 +17,8 @@ canvas 拥有多种绘制**路径**, **矩形**, **圆形**, **字符**以及**�
 
 #### 路径的绘制
 
-+ 描边
-+ 填充
++ 描边 strokeStyle
++ 填充 fillStyle
 
 这两个属性的值可以是字符串，渐变对象，默认颜色是 #000000 ，但是支持使用css中指定的颜色值得任何形式
 
@@ -744,3 +744,383 @@ new Pie().render(data)
 
 运行结果:
 ![](images/canvas/demo22.png)
+
+#### 在 canvas 中使用图片
+
++ js 创建图片
+
+```javascript
+// 注意书写顺序 -- 解决兼容问题
+// ie 在先设置 src 的情况下不能绑定 onload 事件
+var img = document.createElement('img')
+img.onload = function () {
+  console.log('加载完成)
+}
+img.src = ''
+
+
+var img1 = new Image()
+img1.onload = function () {
+  console.log('加载完成)
+}
+img1.src = ''
+```
+
++ canvas 中绘制图片方法一
+
+```javascript
+var img = new Image()
+img.onload = function () {
+  // 参数1: 图片对象
+  // 参数2: 绘制的坐标 x 轴
+  // 参数3: 绘制的坐标 y 轴
+  ctx.drawImage(img, 100, 100)
+}
+img.src = 'images/01.jpg'
+```
+
+![](images/canvas/插入图片01.png)
+
++ canvas 中绘制图片方法二
+
+```javascript
+var img = new Image()
+img.onload = function () {
+  // 参数1: 图片对象
+  // 参数2: 绘制的坐标 x 轴
+  // 参数3: 绘制的坐标 y 轴
+  // 参数4: 绘制图片的宽度
+  // 参数5: 绘制图片的高度
+  ctx.drawImage(img, 100, 100, 50, 50)
+}
+img.src = 'images/01.jpg'
+
+```
+
+![](images/canvas/插入图片02.png)
+
++ canvas 中绘制图片方法三
+
+```javascript
+var img = new Image()
+img.onload = function () {
+  // 参数1: 图片对象
+  // 参数2: 图片定位 x 轴
+  // 参数3: 图片定位 y 轴
+  // 参数4: 截取图片的宽度
+  // 参数5: 截取图片的高度
+  // 参数6: 绘制的坐标 x 轴
+  // 参数7: 绘制的坐标 y 轴
+  // 参数8: 绘制图片的宽度
+  // 参数9: 绘制图片的高度
+  ctx.drawImage(img, 500, 500, 500, 500, 100, 100, 200, 200)
+}
+img.src = 'images/02.jpg'
+
+```
+
+![](images/canvas/插入图片03.png)
+图片原图:
+![](images/canvas/图片原图.jpg)
+
+#### 在 canvas 中使用精灵图
+
+```javascript
+var img = new Image()
+img.onload = function () {
+  var width = ctx.canvas.width
+  var height = ctx.canvas.height
+  var startX = width / 2 - 20
+  var startY = height / 2 - 32.5
+  // 图片对象
+  // 图片的定位X轴 Y轴
+  // 截取图片宽度 高度
+  // 绘制的坐标X轴 Y轴
+  // 绘制的图片宽度 高度
+  ctx.drawImage(img, 40, 195, 40, 65, startX, startY, 40, 65)
+}
+img.src = 'images/03.png'
+```
+
+![](images/canvas/精灵图.png)
+
+#### 帧动画
+
+```javascript
+var canvas = document.querySelector('canvas')
+var ctx = canvas.getContext('2d')
+var img = new Image()
+img.onload = function () {
+  // 画布大小
+  var width = ctx.canvas.width
+  var height = ctx.canvas.height
+
+  // 图片定位
+  var x = y = 0
+
+  // 截取图片的宽度
+  var perWidth = img.width / 4
+  var perHeight = img.height / 4
+
+  // 绘制的起点
+  var startX = width / 2 - perWidth / 2
+  var startY = height / 2 - perHeight / 2
+
+  // 图片对象
+  // 图片的定位X轴 Y轴
+  // 截取图片宽度 高度
+  // 绘制的坐标X轴 Y轴
+  // 绘制的图片宽度 高度
+  ctx.drawImage(img, x, y, perWidth, perHeight, startX, startY, perWidth, perHeight)
+
+  var index = 0
+  setInterval(function () {
+    index++
+    if (index > 3) index = 0
+    ctx.clearRect(startX, startY, perWidth, perHeight)
+    x = index * perWidth
+    y = img.height * 3 / 4
+    ctx.drawImage(img, x, y, perWidth, perHeight, startX, startY, perWidth, perHeight)
+  }, 200)
+}
+img.src = 'images/03.png'
+```
+
+![](images/canvas/帧动画.gif)
+
+#### 移动位置的动画
+
+```javascript
+var canvas = document.querySelector('canvas')
+var ctx = canvas.getContext('2d')
+var img = new Image()
+img.onload = function () {
+  var width = ctx.canvas.width
+  var height = ctx.canvas.height
+  var perWidth = img.width / 4
+  var perHeight = img.height / 4
+  var startX = width / 2 - perWidth / 2
+  var startY = height / 2 - perHeight / 2
+  var step = 0
+  var stepSize = 10
+  var direction = 'left'
+
+  var index = 0
+  ctx.drawImage(
+    img,
+    0, 65,
+    perWidth, perHeight,
+    startX, startY,
+    perWidth, perHeight
+  )
+
+  setInterval(function () {
+    index++
+    index > 3 && (index = 0)
+
+    ctx.clearRect(0, 0, width, height)
+    if (direction === 'left') {
+      step--
+      if ((startX + step * stepSize) < 0) {
+        direction = 'right'
+      }
+    } else {
+      step++
+      if ((startX + step * stepSize) > (width - perWidth)) {
+        direction = 'left'
+      }
+
+    }
+    ctx.drawImage(img,
+      index * perWidth, direction === 'left' ? 65 : 130,
+      perWidth, perHeight,
+      startX + step * stepSize, startY,
+      perWidth, perHeight)
+  }, 200)
+}
+img.src = 'images/03.png'
+```
+
+![](images/canvas/移动位置.gif)
+
+#### 实例一
+
+```javascript
+function Per() {
+  var self = this
+  // 图片对象
+  // 图片的定位X轴 Y轴
+  this.canvas = document.querySelector('canvas')
+  this.ctx = this.canvas.getContext('2d')
+  // 画布的宽高
+  this.width = this.ctx.canvas.width
+  this.height = this.ctx.canvas.height
+  // 步长
+  this.stepSize = 10
+  // 步数图片索引
+  this.index = 0
+
+  this.loadImg(function (img) {
+    // 截取图片宽度 高度
+    // 绘制的图片宽度 高度
+    self.perWidth = img.width / 4
+    self.perHeight = img.height / 4
+    // 绘制的坐标X轴 Y轴
+    self.startX = self.width / 2 - self.perWidth / 2
+    self.startY = self.height / 2 - self.perHeight / 2
+
+    self.drawImg(img, 0, 0, 0)
+    self.bindEvent(img)
+  })
+}
+
+Per.prototype.loadImg = function (callback) {
+  var img = new Image()
+  img.onload = function () {
+    callback && callback(img)
+  }
+  img.src = 'images/04.png'
+}
+
+Per.prototype.drawImg = function (img, stepX, stepY, direction) {
+
+  this.ctx.clearRect(0, 0, this.width, this.height)
+  if (this.index > 3) { this.index = 0 }
+  this.ctx.drawImage(
+    // 图片对象
+    img,
+    // 图片的定位X轴 Y轴
+    this.perWidth * this.index, this.perHeight * direction,
+    // 截取图片宽度 高度
+    this.perWidth, this.perHeight,
+    // 绘制的坐标X轴 Y轴
+    this.startX + stepX * this.stepSize, this.startY + stepY * this.stepSize,
+    // 绘制的图片宽度 高度
+    this.perWidth, this.perHeight
+  )
+}
+
+Per.prototype.bindEvent = function (img) {
+  var self = this
+  var direction = 0
+  var stepX = stepY = 0
+  document.addEventListener('keydown', function (e) {
+    console.log(e.keyCode)
+    switch (e.keyCode) {
+      case 37:// zuo
+        stepX--
+        if (self.startX + stepX * self.stepSize < 0) {
+          stepX++
+        }
+        direction = 1
+        break
+      case 38:// shang
+        stepY--
+        if (self.startY + stepY * self.stepSize < 0) {
+          stepY++
+        }
+        direction = 3
+        break
+      case 39:// you
+        stepX++
+        if ((self.startX + stepX * self.stepSize) > (self.width - self.perWidth)) {
+          stepX--
+        }
+        direction = 2
+        break
+      case 40:// xia
+        stepY++
+        if ((self.startY + stepY * self.stepSize) > (self.height - self.perHeight)) {
+          stepY--
+        }
+        direction = 0
+        break
+    }
+    self.index++
+    self.drawImg(img, stepX, stepY, direction)
+  })
+}
+
+// 测试代码
+new Per()
+```
+
+![](images/canvas/05.gif)
+
+#### 实例二: 刮刮乐
+
+```javascript
+var canvas = document.querySelector('canvas')
+var ctx = canvas.getContext('2d')
+
+var img = new Image()
+img.onload = function () {
+ /*
+  * createPattern() 方法在指定的方向内重复指定的元素
+  * image 规定要使用的图片、画布或视频元素。
+  * repeat 默认。该模式在水平和垂直方向重复。
+  * repeat-x 该模式只在水平方向重复。
+  * repeat-y 该模式只在垂直方向重复。
+  * no-repeat 该模式只显示一次（不重复）。
+  */
+  var pat = ctx.createPattern(img, 'no-repeat')
+  ctx.strokeStyle = pat
+  ctx.lineWidth = 25
+  ctx.lineCap = 'round'
+  ctx.lineJoin = 'round'
+
+  var isDown = false
+
+  ctx.canvas.addEventListener('mousedown', function (e) {
+    ctx.moveTo(e.clientX, e.clientY)
+    isDown = true
+  })
+
+  ctx.canvas.addEventListener('mousemove', function (e) {
+    if (isDown) {
+      ctx.lineTo(e.clientX, e.clientY)
+      ctx.stroke()
+    }
+  })
+
+  ctx.canvas.addEventListener('mouseup', function () {
+    isDown = false
+  })
+
+  ctx.canvas.addEventListener('mouseleave', function () {
+    isDown = false
+  })
+}
+img.src = 'images/05.jpg'
+
+```
+
+![](images/canvas/刮刮乐.gif)
+
+#### 变换
+
++ rotate（angle）：围绕原点旋转图像angle弧度
+
++ scale（scaleX，scaleY）：缩放图像，在x轴方向乘以scaleX，在y轴方向乘以scaleY，scaleX和scaleY的默认值都是1.0
+
++ translate（x，y）：将坐标原点移动到（x，y）。执行这个操作后，坐标（0,0）会变成之前由（x，y）表示的点。
+
+#### 阴影
+
+shadowColor：用css颜色格式表示的阴影颜色，默认为黑色。
+shadowOffsetX：形状或路径x轴方向的阴影偏移量，默认为0。
+shadowOffsetY:形状或路径y轴方向的阴影偏移量，默认为0。
+shadowBlur：模糊的像素数，默认0，即不模糊。
+
+```javascript
+var canvas = document.querySelector("#canvas");
+var ctx = canvas.getContext("2d");
+ctx.shadowOffsetX = 5;
+ctx.shadowOffsetY = 5;
+ctx.shadowBlur = 4;
+ctx.shadowColor = "rgba(2,0,0,0.5)";
+ctx.fillStyle = "yellowgreen"
+ctx.fillRect(100,100,200,200);
+```
+
+![](images/canvas/阴影.png)

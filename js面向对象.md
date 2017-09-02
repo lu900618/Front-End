@@ -118,7 +118,7 @@ console.log(a, b)  // 123, Object{foo: 'bbb'}
     }
   }
   ```
-  ![](images/js/深拷贝与浅拷贝.png)
+  ​
 
 ### 类型检测
 
