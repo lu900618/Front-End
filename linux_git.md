@@ -4,11 +4,8 @@
 
 ### 命令行
 
-- dos
-  windows 下
-- shell
-  Linux 下
-
+- dos windows 下
+- shell Linux 下
 - dos 与 shell 的区别 引用自 [cdsn](http://blog.csdn.net/xiaoxinyu316/article/details/43486411)
   - shell区分大小写，DOS不区分大小写
   - shell的命令的开关可以简写（比如说“-a -l“可以简写为“-al“），而DOS的则不允许
@@ -48,52 +45,162 @@ grep # 筛选
 
 ### vi
 
-vi 的三种模式: ![](images/git/git1.jpg)
+vi 的三种模式:
+
+![](images/git/git1.jpg)
 
 #### vi 的常用操作
 
-- a) 打开/创建文件， vi 文件路径
-- b) 底行模式 :w保存，:w filenme另存为
-- c) 底行模式 :q退出
-- d) 底行模式 :wq保存并退出
-- e) 底行模式 :e! 撤销更改，返回到上一次保存的状态
-- f) 底行模式 :q! 不保存强制退出
-- g) 底行模式 :set nu 设置行号
-- h) 命令模式 ZZ（大写）保存并退出
-- i) 命令模式 u辙销操作，可多次使用
-- j) 命令模式 dd删除当前行
-- k) 命令模式 yy复制当前行
-- l) 命令模式 p 粘贴内容
-- m) 命令模式 ctrl+f向前翻页
-- n) 命令模式 ctrl+b向后翻页
-- o) 命令模式 i进入编辑模式，当前光标处插入
-- p) 命令模式 a进入编辑模式，当前光标后插入
-- q) 命令模式 A进入编辑模式，光标移动到行尾
-- r) 命令模式 o进入编辑模式，当前行下面插入新行
-- s) 命令模式 O进入编辑模式，当前行上面插入新行
+- 打开/创建文件， vi 文件路径
+- 底行模式
+  - 底行模式 :w保存，:w filenme另存为
+  - 底行模式 :q退出
+  - 底行模式 :wq保存并退出
+  - 底行模式 :e! 撤销更改，返回到上一次保存的状态
+  - 底行模式 :q! 不保存强制退出
+  - 底行模式 :set nu 设置行号
+- 命令模式
+  - 命令模式 ZZ（大写）保存并退出
+  - 命令模式 u辙销操作，可多次使用
+  - 命令模式 dd删除当前行
+  - 命令模式 yy复制当前行
+  - 命令模式 p 粘贴内容
+  - 命令模式 ctrl+f向前翻页
+  - 命令模式 ctrl+b向后翻页
+  - 命令模式 i进入编辑模式，当前光标处插入
+  - 命令模式 a进入编辑模式，当前光标后插入
+  - 命令模式 A进入编辑模式，光标移动到行尾
+  - 命令模式 o进入编辑模式，当前行下面插入新行
+  - 命令模式 O进入编辑模式，当前行上面插入新行
 
 ## GIT
 
+版本控制工具: 方便, 高效
+
 ### git 的三个工作区域
+
+工作目录, 暂存区, 本地仓库
 
 ![](images/git/area.jpg)
 
 ### git 管理文件的 4 种状态
 
-- 未追踪untraced
-- 已暂存staged
-- 已提交commited
-- 已修改modified
+-	未追踪 untraced -- 工作目录
+  -已暂存 staged -- 暂存区
+  -已提交 commited -- 本地仓库
+  -已修改 modified -- 工作目录
 
 ### git 命令
 
+#### 新项目添加
+
 ```bash
-git config [--list|--global]  # 查看配置信息
-git status # 查看文件状态
-git log # 查看提交记录
-git add # 工作区添加到缓存区
-git checkout  # 暂存区覆盖工作区
+# 配置用户信息
+git config --global user.name 用户名
+git config --global user.email 邮箱
+
+# 查看配置信息
+git config [--list|--global]
+
+# 初始化本地仓库
+git init
+
+# 添加项目文件
+git add *|文件列表 # 工作区添加到缓存区
+
+# 提交代码
 git commmit -m "" # 暂存区提交到本地仓库
-hit reset --hard  # 回滚到指定版本
+
+# 推送代码
+git push 远程仓库地址 本地分支名称:远程分支名称
+
+# 其他命令
+# 查看文件状态
+git status
+
+# 查看提交记录
+git log
+```
+
+#### 回滚操作
+
+```bash
+# 从缓存区删除
+git rm --cached 文件名
+
+# 回滚所有暂存区已经修改的操作 -- 无法恢复
+git checkout .  # 暂存区覆盖工作区
+
+# 回滚到指定版本 会覆盖缓存区 覆盖工作目录 执行三种操作
+git reset --hard commitId(前七位即可)
+
+# 只回滚本地仓库快照 执行一种操作
+git reset --soft commitId(前七位即可)
+
+# 回滚本地仓库的快照 覆盖暂存区 不覆盖工作目录 执行两种操作
+git reset [--mixed] commitId(前七位即可)
+
+# 回滚最后一次提交
+git reset --hard HEAD^ # HEAD - 本地仓库的最新快照, ^ - 上一次
 
 ```
+
+#### 分支操作
+
+```bash
+# 查看分支
+git branch -a(所有分支) -r(远程分支)
+
+# 创建分支
+git branch 分支名
+
+# 切换分支
+git checkout 分支名
+
+# 创建并切换分支
+git checkout -b 分支名称
+
+# 合并分支
+git merge 分支名(来源分支) # 在 master 上执行
+
+# 删除分支
+git branch -d 分支名 # 分支必须被合并过才能删除
+git branch -D 分支名 # 强制删除
+
+# 删除远程分支
+git push origin --delete 分支名称
+git push origin:分支名称
+```
+
+### 远程仓库
+
+```bash
+# 查看远程仓库别名
+git remote -v
+
+# 创建别名
+git remote add 别名名称 远程仓库地址 # 别名名称常用 origin
+
+# 重命名别名
+git remote rename 原来名称 新名称
+
+# 删除别名
+git remote remove 别名名称
+```
+
+### 已有项目
+
+```bash
+# 下载项目
+git clone 远程仓库地址 [项目名称]
+git pull 远程仓库地址 远程分支名称:本地分支名称
+
+# 忽略文件
+# 在根路径创建 .gitignore 文件, 并上传
+
+# 保存现场
+git stash
+# 恢复现场
+git stash pop
+```
+
