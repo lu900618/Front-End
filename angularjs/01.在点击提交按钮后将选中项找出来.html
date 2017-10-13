@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body ng-app="myApp" ng-controller="demoCtrl">
+  <h3>在点击提交按钮后将选中项找出来</h3>
+  <label for="" ng-repeat="item in balls">
+    <input type="checkbox" name="cb" id="" value="{{item.name}}" ng-model="item.isChecked">{{item.name}}
+  </label>
+  <br>
+  <button ng-click="submitData()">提交</button>
+  <br> 选中的结果:
+  <ul>
+    <li ng-repeat="r in result">{{r.name}}</li>
+  </ul>
+  <script src="./node_modules/angular/angular.min.js"></script>
+  <script>
+    angular.module('myApp', [])
+      .controller('demoCtrl', ['$scope', function ($scope) {
+        $scope.balls = [
+          {
+            name: '足球',
+            isChecked: false
+          },
+          {
+            name: '篮球',
+            isChecked: true
+          },
+          {
+            name: '橄榄球',
+            isChecked: false
+          },
+          {
+            name: '排球',
+            isChecked: false
+          },
+          {
+            name: '乒乓球',
+            isChecked: false
+          }
+        ]
+        $scope.result = []
+        $scope.submitData = function () {
+          $scope.result = []
+          for (var i = 0; i < $scope.balls.length; i++) {
+            if ($scope.balls[i].isChecked) {
+              $scope.result.push($scope.balls[i])
+            }
+          }
+        }
+      }])
+  </script>
+</body>
+
+</html>

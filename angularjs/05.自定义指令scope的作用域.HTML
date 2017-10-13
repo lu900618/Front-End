@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+</head>
+
+<body ng-app="myApp" ng-controller="demoCtrl">
+
+  <div my-dir></div>
+
+  <script src="./node_modules/angular/angular.min.js"></script>
+  <script>
+    angular.module('myApp', [])
+      .directive('myDir', [function () {
+        return {
+          template:'<button ng-click="clickFn()">{{msg}}</button>',
+          link:function(scope, element, attributes){
+            scope.msg = "我是指令中的msg",
+            scope.clickFn = function(){
+              alert('我是指令中的Fn')
+            }
+          }
+        }
+      }])
+      .controller('demoCtrl', ['$scope', function ($scope) {
+
+      }])
+  </script>
+</body>
+
+</html>

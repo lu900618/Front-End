@@ -1,0 +1,4 @@
+.page-header{margin-top:25px;}
+.thumbnail p{width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.thumbnail .img-box{width:100%;height:300px;text-align:center;vertical-align:top;}
+.thumbnail .img-box img{max-height:100%;}

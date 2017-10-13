@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+</head>
+
+<body ng-app="myApp">
+
+  <a ui-sref="index">首页</a>
+  <a ui-sref="list">列表页</a>
+
+  <div ui-view="view-a"></div>
+  <div ui-view="view-b"></div>
+
+  <script src="./node_modules/angular/angular.min.js"></script>
+  <script src="./node_modules/angular-ui-router/angular-ui-router.min.js"></script>
+  <script>
+    angular.module('myApp', ['ui.router'])
+      .config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
+        $stateProvider
+          .state({
+            url: '/index',
+            views: {
+              'view-a': {
+                template: '<div>首页va</div>'
+              },
+              'view-b': {
+                template: '<div>首页vb</div>'
+              }
+            },
+            name: 'index'
+          })
+          .state({
+            url: '/list',
+            views: {
+              'view-a': {
+                template: '<div>列表页va</div>'
+              },
+              'view-b': {
+                template: '<div>列表页vb</div>'
+              }
+            },
+            name: 'list'
+          })
+
+        $urlRouterProvider.otherwise('/index')
+      }])
+  </script>
+</body>
+
+</html>

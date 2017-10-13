@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+</head>
+
+<body ng-app="myApp">
+
+  <div ng-controller="demoCtrlA">aaa</div>
+  <div ng-controller="demoCtrlB">bbb</div>
+
+  <script src="./node_modules/angular/angular.min.js"></script>
+  <script>
+    angular.module('myApp', [])
+      .service('testService', [function () { // 构造函数方式
+        this.name = 'zhangsan'
+        this.say = function () {
+          alert(this.name)
+        }
+      }])
+      .controller('demoCtrlA', ['$scope', 'testService', function ($scope, testService) { // testService 是上面构造函数的实例
+        // testService.say()
+        testService.name = 'lisi'
+      }])
+      .controller('demoCtrlB', ['$scope', 'testService', function ($scope, testService) { // 两个 testService 是同一个实例
+        testService.say()
+      }])
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+</head>
+
+<body ng-app="myApp">
+
+  <a ui-sref="index">首页</a>
+  <!-- 在路由的名字后面加 () 括号内是一个对象 将参数写入对象中 -->
+  <a ui-sref="list({pagenumber:1, pagesize:10})">列表页</a>
+
+  <div ui-view></div>
+
+  <script src="./node_modules/angular/angular.min.js"></script>
+  <script src="./node_modules/angular-ui-router/angular-ui-router.min.js"></script>
+  <script>
+    angular.module('myApp', ['ui.router'])
+      .config(['$stateProvider', function ($stateProvider) {
+        $stateProvider
+          .state({
+            name: 'index',
+            url: '/index',
+            template: '<div>首页</div>'
+          })
+          .state({
+            name: 'list',
+            // 参数配置与 ng-router 一样
+            url: '/list/:pagesize/:pagenumber',
+            template: '<div>列表页</div>',
+            controller: 'listCtrl'
+          })
+      }])
+      .controller('listCtrl', ['$stateParams', function ($stateParams) {
+        console.log($stateParams)
+      }])
+  </script>
+</body>
+
+</html>

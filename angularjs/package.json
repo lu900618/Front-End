@@ -1,0 +1,19 @@
+{
+  "name": "angularjs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "@types/angular": "^1.6.6",
+    "angular": "^1.6.6",
+    "angular-route": "^1.6.6",
+    "swiper": "^3.4.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

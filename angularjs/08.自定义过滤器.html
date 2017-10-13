@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+</head>
+
+<body ng-app="myApp" ng-controller="demoCtrl">
+
+  <div>{{telphone | phonestar }}</div>
+  <div>{{str | firstLetter2Upper:1:2}}</div>
+
+  <script src="./node_modules/angular/angular.min.js"></script>
+  <script>
+    angular.module('myApp', [])
+      .filter('phonestar', [function () {
+        // 隐藏电话号码中间四位
+        return function (value) {
+          return value.substr(0, 3) + 'xxxx' + value.substr(7)
+        }
+      }])
+      .filter('firstLetter2Upper', [function () {
+        return function (value, arg1, arg2) {
+          console.log(arg1, arg2)
+          return value.substr(0, 1).toUpperCase() + value.substr(1)
+        }
+      }])
+      .controller('demoCtrl', ['$scope', function ($scope) {
+        $scope.telphone = '13013101320'
+        $scope.str = 'testfilter'
+      }])
+  </script>
+</body>
+
+</html>

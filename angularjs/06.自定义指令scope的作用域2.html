@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+</head>
+
+<body ng-app="myApp" ng-controller="demoCtrl">
+
+  <div my-dir="我是第一个按钮"></div>
+  <div my-dir="我是第二个按钮"></div>
+
+  <script src="./node_modules/angular/angular.min.js"></script>
+  <script>
+    angular.module('myApp', [])
+      .directive('myDir', [function () {
+        return {
+          scope: true,
+          template: '<button>{{msg}}</button>',
+          link: function (scope, element, attributs) {
+            // scope.msg = attributs.myDir
+          }
+        }
+      }])
+      .controller('demoCtrl', ['$scope', function ($scope) {
+        $scope.msg = '我是控制器中的msg'
+      }])
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+</head>
+
+<body ng-app="myApp" ng-controller="demoCtrl">
+
+  <!-- 自定义指令以标签的方式存在 -->
+  <my-header>
+    <i>标签内部内容</i>
+  </my-header>
+
+  <script src="./node_modules/angular/angular.min.js"></script>
+  <script>
+    angular.module('myApp', [])
+      .directive('myHeader', [function () {
+        return {
+          // 使用的模板
+          templateUrl: 'myHeaderTpl',
+          // 是否用模板的内容替换掉自定义标签, 而不是将模板的内中追加到自定义标签内部
+          relpace: true,
+          // 保存自定义标签之间的内容
+          transclude: true
+        }
+      }])
+      .controller('demoCtrl', ['$scope', function ($scope) {
+        //
+      }])
+  </script>
+  <script type="text/ng-template" id="myHeaderTpl">
+        <h1>这是一个my-header自定义标签<span ng-transclude></span></h1>
+      </script>
+</body>
+
+</html>

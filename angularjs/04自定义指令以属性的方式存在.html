@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+</head>
+
+<body ng-app="myApp" ng-controller="demoCtrl">
+
+  <div my-dir="red" title="123" abc="456">1111</div>
+  <div my-dir="blue" title="123" abc="456">2222</div>
+
+  <script src="./node_modules/angular/angular.min.js"></script>
+  <script>
+    angular.module('myApp', [])
+      .directive('myDir', [function () {
+        return {
+          // 专门写 dom 操作的地方
+          link: function (scope, element, attributes) {
+            // element 指令所在的元素
+            // attributes 指令所在元素身上的属性集合
+            element.css('background', attributes.myDir)
+          }
+        }
+      }])
+      .controller('demoCtrl', ['$scope', function ($scope) {
+
+      }])
+  </script>
+</body>
+
+</html>

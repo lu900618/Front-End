@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+</head>
+
+<body ng-app="myApp" ng-controller="demoCtrl">
+
+  <!-- 不使用 <a href="#!/index"> 的方式 -->
+  <!-- 路由设置中的名字 -->
+  <a ui-sref="index">首页</a>
+  <a ui-sref="list">列表页</a>
+
+  <!-- 不是 ng-view -->
+  <div ui-view></div>
+
+  <script src="./node_modules/angular/angular.min.js"></script>
+  <script src="./node_modules/angular-ui-router/angular-ui-router.min.js"></script>
+  <script>
+    // 引入依赖
+    angular.module('myApp', ['ui.router'])
+      .config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
+        // $stateProvider 配置路由的对象
+        $stateProvider
+          .state({
+            url: '/index',  // 锚点值
+            templateUrl: 'indexTpl', // 模板
+            name: 'index',  // 路由名字
+            controller: 'indexCtrl' // 控制器
+          })
+          .state({
+            url: '/list',
+            templateUrl: 'listTpl',
+            name: 'list',
+            controller: 'listCtrl'
+          })
+
+        // 没有匹配的路由时的默认跳转
+        $urlRouterProvider.otherwise('/index') // 锚点值
+      }])
+      .controller('demoCtrl', ['$scope', function ($scope) {
+
+      }])
+      .controller('indexCtrl', ['$scope', function ($scope) {
+        $scope.msg = 'indexCtrl'
+      }])
+      .controller('listCtrl', ['$scope', function ($scope) {
+        $scope.msg = 'listCtrl'
+      }])
+
+  </script>
+  <script type="text/ng-template" id="indexTpl">
+    <div>我是首页 {{msg}} </div>
+  </script>
+  <script type="text/ng-template" id="listTpl">
+    <div>我是列表页 {{msg}} </div>
+  </script>
+</body>
+
+</html>

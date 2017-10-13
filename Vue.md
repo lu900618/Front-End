@@ -77,21 +77,21 @@ helloworld 是项目名称
 
 ## Vue指令
 
-### `{ { } }`
+### `{{ }}`
 
 ```html
 <div id="app">
   <div>
     <input type="text" v-model="name">
-    <span>你的名字叫: { { name } }</span>
+    <span>你的名字叫: {{ name }}</span>
   </div>
   <div>
     <input type="text" v-model="age">
-    <span>你的年龄是: { { age } }</span>
+    <span>你的年龄是: {{ age }}</span>
   </div>
   <div>
     <input type="text" v-model="sex">
-    <span v-show="sex">你的性别是: { { sex } }</span>
+    <span v-show="sex">你的性别是: {{ sex }}</span>
     <!-- 
     v-show  和  v-if 的区别 
     如果 sex 的值不存在, 都可以达到显示的作用
@@ -120,16 +120,16 @@ var app = new Vue({
 
 在控制台修改 `app.name` 实例也随之更新
 
-`{ { } }` 中支持简单的 `javascript` 表达式:
+`{{ }}` 中支持简单的 `javascript` 表达式:
 
-+ `{ { number + 1 } }`
-+ `{ { true ? 'yes' : 'no' } }`
-+ `{ { message.split('').reverse().join('') } }`
++ `{{ number + 1 }}`
++ `{{ true ? 'yes' : 'no' }}`
++ `{{ message.split('').reverse().join('') }}`
 
-`{ { } }` 中不支持:
+`{{ }}` 中不支持:
 
-+ `{ { var a = 1 } }`
-+ `{ { if (true) { return true } }}`
++ `{{ var a = 1 }}`
++ `{{ if (true) { return true }}}`
 
 ### v-for
 
@@ -139,7 +139,7 @@ var app = new Vue({
 <div id="app">
   <ul>
     <li v-for="food in foodList">
-      { { food.name } }:&yen{ { food.discount ? food.price * food.discount : food.price} }
+      {{ food.name }}:&yen{{ food.discount ? food.price * food.discount : food.price}}
     </li>
   </ul>
   <!-- 
@@ -200,7 +200,7 @@ tips: `v-bind:` 可以简写成 `:`
     <img :src="img">
   </a>
   <!-- 
-    注意: url 没有被 { { } } 包裹
+    注意: url 没有被 {{ }} 包裹
     浏览器解析后不会显示 v-bind
     -->
 </div>
@@ -249,10 +249,10 @@ v-cloak 指令保持在元素上直到关联实例结束编译后自动移除，
 
 ```html
 <style>
-  [v-cloak] { display: none } 
+  [v-cloak] { display: none }
 </style>
 <span v-cloak>{{msg}}</span>
-<script> 
+<script>
   new Vue({
     data:{
         msg:'hello ivan'
@@ -376,7 +376,7 @@ var app = new Vue({
   多空格在 HTML 中只显示一个空格, 但是在数据库中会远洋存储
   <pre> 按原格式显示
    -->
-  <pre>{ { name } }</pre>
+  <pre>{{ name }}</pre>
 </div>
 ```
 
@@ -405,7 +405,7 @@ var app = new Vue({
     <input type="radio" value="female" v-model="sex">
   </label>
   <br>
-  { {sex} }
+  {{sex}}
 </div>
 ```
 
@@ -422,7 +422,7 @@ var app = new Vue({
     <input type="checkbox" value="female" v-model="hobby">
   </label>
   <br>
-  { {hobby} }
+  {{hobby}}
 </div>
 ```
 
@@ -442,13 +442,13 @@ var app = new Vue({
   <select v-model="from">
     <option value="1">hkong</option>
     <option value="2">dlu</option>
-  </select> { { from } }
+  </select> {{ from }}
   <hr>
   <div>你要去哪里?</div>
   <select v-model="to" multiple>
     <option value="1">hkong</option>
     <option value="2">dlu</option>
-  </select> { { to } }
+  </select> {{ to }}
 </div>
 ```
 
@@ -534,11 +534,11 @@ v-if 和 v-show 的区别：
     </tr>
     <tr>
       <td>总分</td>
-      <td>{ { sum } }</td>
+      <td>{{ sum }}</td>
     </tr>
     <tr>
       <td>平均分</td>
-      <td>{ { averange } }</td>
+      <td>{{ averange }}</td>
     </tr>
   </tbody>
 </table>
@@ -607,14 +607,14 @@ new Vue({
 
 <template id="like-component-tpl">
   <button :class="{liked:liked}" @click="toggle_like">
-  👍  { { likeCount } }
+  👍  {{ likeCount }}
   </button>
 </template>
 ```
 
 ```javascript
 Vue.component('like', {
-  // template: '<button :class="{liked:liked}" @click="toggle_like">👍  { { likeCount } }</button>',
+  // template: '<button :class="{liked:liked}" @click="toggle_like">👍  {{ likeCount }}</button>',
   // template 内容过长可以使用 es6 模板字符串
   // 也可以定义在 HTML 中模板 这里传选择器
   template: '#like-component-tpl',
@@ -636,6 +636,132 @@ Vue.component('like', {
   }
 })
 
+new Vue({
+  el: '#app'
+})
+```
+
+### 父子组件通讯
+
+```html
+<div id="app">
+  <alert msg="怎么弹出这个信息" a="弹出这个" b="还有这个"></alert>
+  <user username="whh"></user>
+  <user username="lhh"></user>
+</div>
+```
+
+```javascript
+Vue.component('alert', {
+  template: '<button @click="onClick">弹弹弹</button>',
+  props: ['msg', 'a', 'b'],
+  methods: {
+    onClick: function () {
+      alert(`msg:${this.msg}  a:${this.a}  b:${this.b}`)
+    }
+  }
+})
+Vue.component('user', {
+  template: '<a :href="\'/user/\' + username" >{{ username }}</a>',
+  props: ['username'],
+  methods: {
+
+  }
+})
+
+new Vue({
+  el: '#app'
+})
+```
+
+### 子父组件通讯
+
+```html
+<div id="app">
+  <balance></balance>
+</div>
+```
+
+```javascript
+Vue.component('balance', {
+  template: `
+  <div>
+    <show @show-balance="show_balance"></show>
+    <div v-if="show">
+      您的余额: 00.00
+    </div>
+  </div>
+  `,
+  methods: {
+    show_balance: function (data) {
+      this.show = true
+      console.log('data',data);
+    }
+  },
+  data: function () {
+    return {
+      show: false
+    }
+  }
+})
+
+Vue.component('show', {
+  template: `
+  <button @click="onClick()">显示余额</button>
+  `,
+  methods: {
+    onClick() {
+      // $emit 触发当前实例上的事件 (事件名, 参数)
+      this.$emit('show-balance', {a: 1, b: 2})
+    }
+  }
+})
+
+var app = new Vue({
+  el: '#app'
+})
+```
+
+### 兄弟组件通讯
+
+```html
+<div id="app">
+  <huahua></huahua>
+  <shuandan></shuandan>
+</div>
+```
+
+```javascript
+var Event = new Vue()
+
+Vue.component('huahua', {
+  template: `<div>我说: <input @keyup="on_change" v-model="i_said"></div>`,
+  methods: {
+    on_change: function () {
+      Event.$emit('huahua-said-something', this.i_said)
+    }
+  },
+  data: function () {
+    return {
+      i_said: ''
+    }
+  }
+})
+
+Vue.component('shuandan', {
+  template: `<div>花花说: {{huahua_said}}</div>`,
+  data: function () {
+    return {
+      huahua_said: ''
+    }
+  },
+  mounted: function () { // 初始化完毕节点--钩子
+    var that = this
+    Event.$on('huahua-said-something', function (data) {
+      that.huahua_said = data
+    })
+  }
+})
 new Vue({
   el: '#app'
 })
