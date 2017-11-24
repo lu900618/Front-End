@@ -18,66 +18,9 @@ ViewModel: 连接视图和数据的中间件
 
 在 MVVM 下, 数据和视图是不能直接通讯的, 需要通过 ViewModel 进行通讯, ViewModel 通常要实现一个 observe 观察者, 当 数据 发生变化, observe 能观察到这种变化, 然后通知到对应的 视图 做出更新; 当用户操作视图, observe 也能观察到相应的变化, 然后通知数据做改动 -- 这就是数据的**双向绑定**
 
-## vue-cli
-
-### 安装
-
-```bash
-npm install -g vue-cli
-```
-
-### 测试
-
-```bash
-vue -V # 测试是否安装成功
-```
-
-结果
-
-```bash
-2.8.2 # 安装的 vue 的版本号
-```
-
-### 搭建第一个项目
-
-```bash
-vue init webpack helloworld
-```
-
-webpack 是官方模板
-helloworld 是项目名称
-
-依次按提示输入
-
-```bash
-? Project name helloworld # 指的是 package.json 中的项目名
-? Project description A Vue.js project
-? Author lu900618 <32401545@qq.com>
-? Vue build standalone
-? Install vue-router? Yes
-? Use ESLint to lint your code? No
-? Setup unit tests with Karma + Mocha? No
-? Setup e2e tests with Nightwatch? No
-# 等待
-# 完成后会显示以下提示
-  vue-cli · Generated "helloworld".
-
-  To get started:
-
-    cd helloworld
-    npm install
-    npm run dev
-```
-
-一次输入命令, 浏览器会自动弹出, 显示页面.
-
-### 项目文件夹说明
-
-![项目文件夹说明](images/vue/项目文件夹说明.png)
-
 ## Vue指令
 
-### `{{ }}`
+### `{{ }}` 插值表达式
 
 ```html
 <div id="app">
@@ -133,7 +76,7 @@ var app = new Vue({
 
 ### v-for
 
-用法: `v-for="item in arr"`
+用法: `v-for="item in arr" :key="唯一值"` 新版本需要绑定 key
 
 ```html
 <div id="app">
@@ -147,7 +90,6 @@ var app = new Vue({
     当在 console 中执行: 
     app.foodList.push({ name: '黄瓜',  price: 2, discount: 0.6}) 的时候, 
     页面的展示也会刷新
-
     -->
 </div>
 ```
@@ -175,13 +117,6 @@ var app = new Vue({
 <div v-for="(val, key, index) in user"></div>
 ```
 
-需要主键: `:key`
-
-```html
-<div v-for="item in items" :key="item.id">
-  {{ item.text }}
-</div>
-```
 
 ### v-bind
 
@@ -218,7 +153,7 @@ var app = new Vue({
 })
 ```
 
-### v-text v-html
+### v-text / v-html
 
 解决网速特别慢时, 表达式闪烁
 
@@ -245,7 +180,7 @@ var app = new Vue({
 
 v-cloak 指令保持在元素上直到关联实例结束编译后自动移除，v-cloak  和 CSS 规则如 [v-cloak] { display: none } 一起用时，这个指令可以隐藏未编译的 Mustache 标签直到实例准备完毕。
 
-通常用来防止{{}}表达式闪烁问题
+通常用来防止 `{{ }}` 表达式闪烁问题
 
 ```html
 <style>
@@ -345,7 +280,7 @@ var app = new Vue({
 })
 ```
 
-### v-model
+### v-model 双向数据绑定
 
 ```javascript
 var app = new Vue({
@@ -503,7 +438,7 @@ v-if 和 v-show 的区别：
   但是 v-if是将这个元素添加或者移除到dom中，
   而v-show 是在这个元素上添加 style="display:none"和移除它来控制元素的显示和隐藏的
 
-### 计算属性
+## 计算属性
 
 用于通过其他的数据计算出新数据
 
@@ -654,7 +589,7 @@ new Vue({
 ```javascript
 Vue.component('alert', {
   template: '<button @click="onClick">弹弹弹</button>',
-  props: ['msg', 'a', 'b'],
+  props: ['msg', 'a', 'b'], // 注意这个属性
   methods: {
     onClick: function () {
       alert(`msg:${this.msg}  a:${this.a}  b:${this.b}`)
@@ -765,4 +700,216 @@ Vue.component('shuandan', {
 new Vue({
   el: '#app'
 })
+```
+
+## 过度&动画
+
+将需要动画的组件放入 'transition' 组件内部
+
+在进入/离开的过渡中，会有 6 个 class 切换。
+v-enter：定义进入过渡的开始状态。在元素被插入时生效，在下一个帧移除。
+v-enter-active：定义过渡的状态。在元素整个过渡过程中作用，在元素被插入时生效，在 transition/animation 完成之后移除。这个类可以被用来定义过渡的过程时间，延迟和曲线函数。
+v-enter-to: 2.1.8版及以上 定义进入过渡的结束状态。在元素被插入一帧后生效 (于此同时 v-enter 被删除)，在 transition/animation 完成之后移除。
+v-leave: 定义离开过渡的开始状态。在离开过渡被触发时生效，在下一个帧移除。
+v-leave-active：定义过渡的状态。在元素整个过渡过程中作用，在离开过渡被触发后立即生效，在 transition/animation 完成之后移除。这个类可以被用来定义过渡的过程时间，延迟和曲线函数。
+v-leave-to: 2.1.8版及以上 定义离开过渡的结束状态。在离开过渡被触发一帧后生效 (于此同时 v-leave 被删除)，在 transition/animation 完成之后移除。
+
+// TODO
+
+## 生命周期
+
+// TODO
+
+## vue-cli
+
+### 安装
+
+```bash
+npm install -g vue-cli
+```
+
+### 测试
+
+```bash
+vue -V # 测试是否安装成功
+```
+
+结果
+
+```bash
+2.8.2 # 安装的 vue 的版本号
+```
+
+### 搭建第一个项目
+
+```bash
+vue init webpack helloworld
+```
+
+webpack 是官方模板
+helloworld 是项目名称
+
+依次按提示输入
+
+```bash
+? Project name (helloworld) # 项目名 指的是 package.json 中的项目名
+? Project description (A Vue.js project) # 项目描述
+? Author (xxxx <xxxx@qq.com>) # 作者
+> Runtime + Compiler: recommended for most users # 运行时 + 编译
+  Runtime-only: about 6KB lighter min+gzip, but templates (or any Vue-specific HTML) are ONLY allow
+ed in .vue files - render functions are required elsewhere # 仅运行时
+? Install vue-router? (Y/n) # 是否安装 vue-router
+? Use ESLint to lint your code? (Y/n) # 是否使用 ESLint
+? Pick an ESLint preset (Use arrow keys) # 选择ESLint 规则
+> Standard (https://github.com/feross/standard)
+  Airbnb (https://github.com/airbnb/javascript)
+  none (configure it yourself)
+? Setup unit tests with Karma + Mocha? (Y/n) # 测试环境
+? Setup e2e tests with Nightwatch? (Y/n)
+
+# 等待
+# 完成后会显示以下提示
+   vue-cli · Generated "helloworld".
+# 按提示依次执行
+   To get started:
+
+     cd helloworld
+     npm install
+     npm run dev
+
+   Documentation can be found at https://vuejs-templates.github.io/webpack
+```
+
+一次输入命令, 浏览器会自动弹出, 显示页面.
+
+### 项目文件夹说明
+
+![项目文件夹说明](images/vue/项目文件夹说明.png)
+
+### 组件
+
+1.在 `src/components` 下新建文件夹 `m-header`, 创建 `m-header.vue` 文件.
+
+```html
+<template>
+  <div class="m-header">
+    <div class="icon"></div>
+    <h1 class="text">Chicken Music</h1>
+  </div>
+</template>
+
+<script type="text/ecmascript-6">
+  export default {}
+</script>
+
+<style scoped lang="stylus" rel="stylesheet/stylus">
+</style>
+```
+2.在主文件 App.vue 中引入
+
+```html
+<script type="text/ecmascript-6">
+  import MHeader from 'components/m-header/m-header' // 让程序自动查询.vue文件
+  export default {
+    components: {
+      MHeader
+    }
+  }
+</script>
+```
+3.在主文件 App.vue 使用处加上组件名
+
+```html
+<template>
+  <div id="app">
+    <m-header></m-header>
+  </div>
+</template>
+```
+### 路由
+
+1.在 `\src\router\index.js` 中注册路由
+
+```javascript
+// 导包
+import Vue from 'vue'
+import Router from 'vue-router'
+// 注册路由
+Vue.use(Router)
+```
+
+2.导入其他组件, 配置路由
+
+```javascript
+import Vue from 'vue'
+import Router from 'vue-router'
+import Recommend from 'components/recommend/recommend'
+import Singer from 'components/singer/singer'
+import Rank from 'components/rank/rank'
+import Search from 'components/search/search'
+
+Vue.use(Router)
+
+export default new Router({
+  routes: [
+    { path: '/recommend', component: Recommend },
+    { path: '/singer', component: Singer },
+    { path: './rank', component: Rank },
+    { path: '/search', component: Search }
+  ]
+})
+```
+3.在 main.js 中使用
+
+```javascript
+import router from './router' // 这个 router 是上一步导出的 Router的实例
+
+new Vue({
+  el: '#app',
+  router, // 传入 router
+  render: h => h(App)
+})
+```
+4.配置 tab.vue
+
+```html
+<template>
+  <div class="tab">
+    <router-link tag="div" class="tab-item" to="/recommend">
+      <span class="tab-link">推荐</span>
+    </router-link>
+    <router-link tag="div" class="tab-item" to="/singer">
+      <span class="tab-link">歌手</span>
+    </router-link>
+    <router-link tag="div" class="tab-item" to="/rank">
+      <span class="tab-link">排行</span>
+    </router-link>
+    <router-link tag="div" class="tab-item" to="/search">
+      <span class="tab-link">搜索</span>
+    </router-link>
+  </div>
+</template>
+```
+5.App.vue 中使用
+
+```html
+<template>
+  <div id="app">
+    <m-header></m-header>
+    <tab></tab>
+    <router-view></router-view>
+  </div>
+</template>
+
+<script>
+  import MHeader from 'components/m-header/m-header'
+  import Tab from 'components/tab/tab'
+
+  export default {
+    components: {
+      MHeader,
+      Tab
+    }
+  }
+</script>
 ```
