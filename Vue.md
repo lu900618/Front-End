@@ -718,7 +718,7 @@ v-leave-to: 2.1.8版及以上 定义离开过渡的结束状态。在离开过�
 
 ## 生命周期
 
-// TODO
+![vue声明周期](/images/vue/lifecycle.png)
 
 ## vue-cli
 
@@ -786,7 +786,7 @@ ed in .vue files - render functions are required elsewhere # 仅运行时
 
 ![项目文件夹说明](images/vue/项目文件夹说明.png)
 
-### 组件
+### 使用组件
 
 1.在 `src/components` 下新建文件夹 `m-header`, 创建 `m-header.vue` 文件.
 
@@ -805,6 +805,7 @@ ed in .vue files - render functions are required elsewhere # 仅运行时
 <style scoped lang="stylus" rel="stylesheet/stylus">
 </style>
 ```
+
 2.在主文件 App.vue 中引入
 
 ```html
@@ -817,6 +818,7 @@ ed in .vue files - render functions are required elsewhere # 仅运行时
   }
 </script>
 ```
+
 3.在主文件 App.vue 使用处加上组件名
 
 ```html
@@ -826,6 +828,7 @@ ed in .vue files - render functions are required elsewhere # 仅运行时
   </div>
 </template>
 ```
+
 ### 路由
 
 1.在 `\src\router\index.js` 中注册路由
@@ -859,6 +862,7 @@ export default new Router({
   ]
 })
 ```
+
 3.在 main.js 中使用
 
 ```javascript
@@ -870,6 +874,7 @@ new Vue({
   render: h => h(App)
 })
 ```
+
 4.配置 tab.vue
 
 ```html
@@ -890,6 +895,7 @@ new Vue({
   </div>
 </template>
 ```
+
 5.App.vue 中使用
 
 ```html
