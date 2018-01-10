@@ -398,6 +398,21 @@ angular.module('myApp', [])
 - ng-show ng-hide 是通过样式的方式达到显示隐藏元素的目的
 - ng-if 是通过增加和删除DOM节点的方式达到显示隐藏元素的目的
 
+> ng-if 会隐式的产生新作用域，ng-switch、ng-include等动态创建一块界面的也是如此。
+>
+> 这样会导致，在 ng-if 中用基本变量绑定 ng-model，在外层 div 中把此 model 绑定给另一个显示区域，内层改变时，外层不会同步改变。因为此时已经是两个变量了。
+>
+> ```html
+> <p>{{name}}</p>
+> <div ng-if="true">
+>     <input type="text" ng-model="name">
+> </div>
+> ```
+>
+> `ng-show` 不会有这个问题，因为他不自带一级作用域。
+>
+> 避免这类问题出现的办法是，始终将页面中的元素绑定到对象的属性（data.x）而不是直接绑定到基本变量（x）上。详见[AngularJS 中的作用域](http://huangtengfei.com/2015/09/scope-in-angularjs/)
+
 #### ng-switch、ng-switch-when
 
 ng-switch ng-switch-when 是一对指令类, 似于JS中 switch case 语句

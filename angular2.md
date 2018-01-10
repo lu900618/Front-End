@@ -1,14 +1,26 @@
 # angular2
 
-## 安装
+## 安装/Angular-Cli
 
 `npm install -g @angular-cli` 安装脚手架
 `ng -v` 查看安装版本
+`ng -help` 帮助
 `ng new appName` 创建项目
+`ng serve` 启动项目
+`ng generate xx` 创建组件 支持的有：cl:class c:component d:directive e:enum m:module p:pipe s:service, 简写 `ng g c User`
+`ng serve/build --prod --aot` 启用 aot
+`ng test` 测试
 
 ![](images/angular/列表说明.png)
+![名词解释](images/angular/名词解释.png)
 
 ## 组件
+
+angular2 采用单向数据流，不再有脏检查的效率问题了。
+![](images/angular/单向数据流.png)
+组件变化，利用不可变数据类型，可以精确定位到变化的分支，不需要遍历整个组件树。
+![](images/angular/实际项目中的组件树.png)
+![](images/angular/组件树生成器.png)
 
 ### 装饰器
 
@@ -31,6 +43,8 @@ angular 会根据这些源数据的值渲染组件, 并执行组件的逻辑
 // @Component 告诉 angular 将 typescript 类识别为组件
 export class AppComponent {
   // 定义组件的控制器
+  constructor(){}
+  ngOnInit(){}
 }
 ```
 
@@ -76,9 +90,15 @@ export class AppComponent {
 
 ## 模块
 
+为什么要有 ngModule？
+> 方便网页按需加载 js 文件。
+要权衡文件体积和请求的数量，浏览器同时的http请求数量是有限的。
+
 模块也是带着装饰器的 typescript 类
 
 ```typescript
+import xxx ...
+
 @NgModule({
   // 声明模块中有什么
   declarations: [
@@ -100,9 +120,43 @@ export class AppModule { }
 
 ## 路由
 
+是独立的模块，有独立的版本号。
+
+```typescript
+import { RouterModule } from '@angular/router'
+```
+
 ### Routes
 
 路由配置, 保存着哪个 URL 对应展示哪个组件, 以及在哪个 RouterOutlet 中展示组件
+
+```typescript
+// 静态路由，angular-cli会将所有文件打包到一个文件，体积比较大
+export const appRoutes = [
+  {
+    path: '',
+    redirectTo: 'posts',
+    pathMatch: 'full'
+  },
+  {
+    path: 'posts',
+    component: 'xxxModule' // component
+  }
+]
+
+// 异步路由
+export const appRoutes = [
+  {
+    path: '',
+    redirectTo: 'posts',
+    pathMatch: 'full'
+  },
+  {
+    path: 'posts',
+    loadChildren: 'xxxModule' // loadChildren
+  }
+]
+```
 
 ### RouterOutlet
 
@@ -119,3 +173,40 @@ export class AppModule { }
 ### ActivatedRoute
 
 当前激活的路由对象, 保存着当前路由的信息, 如路由地址, 路由参数等
+
+## Angular2 的核心思想
+
+### DI 依赖注入
+
+- 不同于 Spring，Angular2 中只有构造器注入。
+
+  ```typescript
+  export class UserComponent {
+    // ...
+    constructor(
+      // 注入了三个内容
+      public router: Router,
+      public activatedRoute: ActivatedRoute,
+      public loginService: LoginService
+    ) {
+      console.log(this.loginService)
+    }
+    // ...
+  }
+
+  ```
+
+- 注射器(Injector)也是树形结构
+  ![](images/angular/注射器也是树形结构.png)
+- **每一个HTML标签上都会有一个注射器实例**
+- **注射器是通过 constructor 进行的**
+- **@Injectable装饰器是@Component的子类**
+
+### DataBinding 数据绑定
+
+## UI组件库
+
+- ng2-bootstrap
+- PrimeNG
+- Angular-Material
+- ionic
