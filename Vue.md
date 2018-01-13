@@ -680,210 +680,6 @@ var app = new Vue({
 })
 ```
 
-## 组件
-
-### 全局定义组件
-
-`Vue.component(标签名, 内容)` 在 HTML 中 Vue 接管的范围内都可以使用
-
-```html + javascript
-Vue.component('alert', {
-  template: '<button @click="on_click">弹弹弹</button>',
-  methods: {
-    on_click: function () {
-      alert('Yo.')
-    }
-  }
-})
-```
-
-### 局部定义组件
-
-```javascript
-new Vue({
-  el: '#seg1',
-  components: {
-    alert: {
-      template: '<button @click="on_click">弹弹弹</button>',
-      methods: {
-        on_click: function () {
-          alert('Yo.')
-        }
-      }
-    }
-  }
-})
-```
-
-### demo
-
-```html
-<div id="app">
-  <like></like>
-</div>
-
-<template id="like-component-tpl">
-  <button :class="{liked:liked}" @click="toggle_like">
-  👍  {{ likeCount }}
-  </button>
-</template>
-```
-
-```javascript
-Vue.component('like', {
-  // template: '<button :class="{liked:liked}" @click="toggle_like">👍  {{ likeCount }}</button>',
-  // template 内容过长可以使用 es6 模板字符串
-  // 也可以定义在 HTML 中模板 这里传选择器
-  template: '#like-component-tpl',
-  data: function () {  // 使用function return 避免引用赋值
-    return {
-      likeCount: 10,
-      liked: false
-    }
-  },
-  methods: {
-    toggle_like: function () {
-      if (!this.liked) {
-        this.likeCount++
-      } else {
-        this.likeCount--
-      }
-      this.liked = !this.liked
-    }
-  }
-})
-
-new Vue({
-  el: '#app'
-})
-```
-
-### 父子组件通讯
-
-```html
-<div id="app">
-  <alert msg="怎么弹出这个信息" a="弹出这个" b="还有这个"></alert>
-  <user username="whh"></user>
-  <user username="lhh"></user>
-</div>
-```
-
-```javascript
-Vue.component('alert', {
-  template: '<button @click="onClick">弹弹弹</button>',
-  props: ['msg', 'a', 'b'], // 注意这个属性
-  methods: {
-    onClick: function () {
-      alert(`msg:${this.msg}  a:${this.a}  b:${this.b}`)
-    }
-  }
-})
-Vue.component('user', {
-  template: '<a :href="\'/user/\' + username" >{{ username }}</a>',
-  props: ['username'],
-  methods: {
-
-  }
-})
-
-new Vue({
-  el: '#app'
-})
-```
-
-### 子父组件通讯
-
-```html
-<div id="app">
-  <balance></balance>
-</div>
-```
-
-```javascript
-Vue.component('balance', {
-  template: `
-  <div>
-    <show @show-balance="show_balance"></show>
-    <div v-if="show">
-      您的余额: 00.00
-    </div>
-  </div>
-  `,
-  methods: {
-    show_balance: function (data) {
-      this.show = true
-      console.log('data',data);
-    }
-  },
-  data: function () {
-    return {
-      show: false
-    }
-  }
-})
-
-Vue.component('show', {
-  template: `
-  <button @click="onClick()">显示余额</button>
-  `,
-  methods: {
-    onClick() {
-      // $emit 触发当前实例上的事件 (事件名, 参数)
-      this.$emit('show-balance', {a: 1, b: 2})
-    }
-  }
-})
-
-var app = new Vue({
-  el: '#app'
-})
-```
-
-### 兄弟组件通讯
-
-```html
-<div id="app">
-  <huahua></huahua>
-  <shuandan></shuandan>
-</div>
-```
-
-```javascript
-var Event = new Vue()
-
-Vue.component('huahua', {
-  template: `<div>我说: <input @keyup="on_change" v-model="i_said"></div>`,
-  methods: {
-    on_change: function () {
-      Event.$emit('huahua-said-something', this.i_said)
-    }
-  },
-  data: function () {
-    return {
-      i_said: ''
-    }
-  }
-})
-
-Vue.component('shuandan', {
-  template: `<div>花花说: {{huahua_said}}</div>`,
-  data: function () {
-    return {
-      huahua_said: ''
-    }
-  },
-  mounted: function () { // 初始化完毕节点--钩子
-    var that = this
-    Event.$on('huahua-said-something', function (data) {
-      that.huahua_said = data
-    })
-  }
-})
-new Vue({
-  el: '#app'
-})
-```
-
 ## 过度&动画
 
 将需要动画的组件放入 'transition' 组件内部
@@ -1048,6 +844,391 @@ axios.interceptors.response.use(function (response) {
     // 错误处理
     return Promise.reject(error);
   })
+```
+
+## 自定义指令
+
+- 作用：进行DOM操作
+- 使用场景：对纯DOM元素进行底层操作，比如：文本获取焦点
+- [vue自定义指令用法实例](https://juejin.im/entry/58b7c5d8ac502e006cfee34a)
+
+### 全局指令
+
+```javascript
+// 第一个参数：指令名称
+// 第二个参数：配置对象，指定指令的钩子函数
+Vue.directive('directiveName', {
+  // bind中只能对元素自身进行DOM操作，而无法对父级元素操作
+  // 只调用一次 指令第一次绑定到元素时调用。在这里可以进行一次性的初始化设置。
+  bind( el，binding, vnode ) {
+    // 参数详解
+    // el：指令所绑定的元素，可以用来直接操作 DOM 。
+    // binding：一个对象，包含以下属性：
+      // name：指令名，不包括 v- 前缀。
+      // value：指令的绑定值，等号后面的值 。
+      // oldValue：指令绑定的前一个值，仅在 update 和 componentUpdated 钩子中可用。无论值是否改变都可用。
+      // expression：字符串形式的指令表达式 等号后面的字符串 形式
+      // arg：传给指令的参数，可选。例如 v-my-directive:foo 中，参数为 "foo"。
+      // modifiers：指令修饰符。例如：v-directive.foo.bar中，修饰符对象为 { foo: true, bar: true }。
+    // vnode：Vue 编译生成的虚拟节点。。
+    // oldVnode：上一个虚拟节点，仅在 update 和 componentUpdated 钩子中可用。
+  },
+  // inserted这个钩子函数调用的时候，当前元素已经插入页面中了，也就是说可以获取到父级节点了
+  inserted (  el，binding, vnode ) {},
+  //  DOM重新渲染前
+  update(el，binding, vnode,oldVnode) {},
+  // DOM重新渲染后
+  componentUpdated ( el，binding, vnode,oldVnode ) {},
+  // 只调用一次，指令与元素解绑时调用
+  unbind ( el ) {
+    // 指令所在的元素在页面中消失，触发
+  }
+})
+// 简写 如果你想在 bind 和 update 时触发相同行为，而不关心其它的钩子:
+Vue.directive('自定义指令名', function( el, binding ) {})
+// 例：
+Vue.directive('color', function(el, binding) {
+  el.style.color = binging.value
+})
+// 使用 注意直接些会被i成data中的数据“red” 需要字符串则嵌套引号"'red'"
+<p v-color="'red'"></p>
+```
+
+### 局部指令
+
+```javascript
+var vm = new Vue({
+  el : "#app",
+  directives: {
+    directiveName: { }
+  }
+})
+```
+
+## 组件
+
+### 全局定义组件
+
+`Vue.component(标签名, 内容)` 在 HTML 中 Vue 接管的范围内都可以使用
+
+```javascript
+// 1.注册全局组件
+Vue.component('alert', {
+  // template：有且只能有一个根元素，template可以使模板字符串，也可以是一个模板的id
+  template: '<button @click="on_click">弹弹弹</button>',
+  // data：必须是函数，并且有返回值，是对象
+  data () {
+    return { }
+  },
+  methods: {
+    on_click: function () {
+      alert('Yo.')
+    }
+  }
+})
+```
+
+```html
+<!-- 2.使用自定义组件 -->
+<div id="example">
+  <alert></alert>
+</div>
+```
+
+extend：使用基础的Vue构造器，创建一个“子类”。参数是一个包含组件选项的对象
+
+```javascript
+// 注册组件，传入一个扩展过的构造器
+Vue.component('my-component', Vue.extend({ /* ... */ }))
+
+// 注册组件，传入一个选项对象 (自动调用 Vue.extend)
+Vue.component('my-component', { /* ... */ })
+
+var Home = Vue.extend({
+  template: '',
+  data() {}
+})
+Vue.component('home', Home)
+```
+
+### 局部定义组件
+
+在某一个具体的vue实例中定义的，只能在这个vue实例中使用
+
+```javascript
+new Vue({
+  el: '#seg1',
+  components: {
+    'my-component': {
+      template: '<button @click="on_click">弹弹弹</button>',
+      methods: {
+        on_click: function () {
+          alert('Yo.')
+        }
+      }
+    }
+  }
+})
+```
+
+### demo
+
+```html
+<div id="app">
+  <like></like>
+</div>
+
+<template id="like-component-tpl">
+  <button :class="{liked:liked}" @click="toggle_like">
+  👍  {{ likeCount }}
+  </button>
+</template>
+```
+
+```javascript
+Vue.component('like', {
+  // template: '<button :class="{liked:liked}" @click="toggle_like">👍  {{ likeCount }}</button>',
+  // template 内容过长可以使用 es6 模板字符串
+  // 也可以定义在 HTML 中模板 这里传选择器
+  template: '#like-component-tpl',
+  data: function () {  // 使用function return 避免引用赋值
+    return {
+      likeCount: 10,
+      liked: false
+    }
+  },
+  methods: {
+    toggle_like: function () {
+      if (!this.liked) {
+        this.likeCount++
+      } else {
+        this.likeCount--
+      }
+      this.liked = !this.liked
+    }
+  }
+})
+
+new Vue({
+  el: '#app'
+})
+```
+
+### is特性
+
+在某些特定的标签中只能存在指定的标签，如 ul>li，如果要浏览器正确识别则需要使用 is
+
+```html
+<!-- 案例 -->
+<ul id="app">
+  <!-- 不能识别 -->
+  <my-li></my-li>
+  <!-- 正常识别 -->
+  <li is="my-li"></li>
+</ul>
+
+<script>
+  var vm = new Vue({
+    el: "#app",
+    components : {
+      myLi : {
+        template : `<li>内容</li>`
+      }
+    }
+  })
+</script>
+```
+
+## 组件通讯
+
+### 父子组件通讯
+
+- 通过子组件 props 属性来传递数据，props是一个数组
+- 传递过来的 props 的用法与 data 相同
+
+```html
+<div id="app">
+  <alert msg="怎么弹出这个信息" a="弹出这个" b="还有这个"></alert>
+  <user username="whh"></user>
+  <user username="lhh"></user>
+</div>
+```
+
+```javascript
+Vue.component('alert', {
+  template: '<button @click="onClick">弹弹弹</button>',
+  props: ['msg', 'a', 'b'], // 注意这个属性
+  methods: {
+    onClick: function () {
+      alert(`msg:${this.msg}  a:${this.a}  b:${this.b}`)
+    }
+  }
+})
+Vue.component('user', {
+  template: '<a :href="\'/user/\' + username" >{{ username }}</a>',
+  props: ['username'],
+  methods: {
+
+  }
+})
+
+new Vue({
+  el: '#app'
+})
+```
+
+### 子父组件通讯
+
+- 父组件给子组件传递一个函数，由子组件调用这个函数
+- 借助 vue 中的自定义事件 (v-on:customFn="fn")
+
+```html
+<div id="app">
+  <balance></balance>
+</div>
+```
+
+```javascript
+Vue.component('balance', {
+  // 2. 在子组件中绑定 v-on:自定义事件名="父组件中的方法" ==> @pfn="parentFn"
+  template: `
+  <div>
+    <show @show-balance="show_balance"></show>
+    <div v-if="show">
+      您的余额: 00.00
+    </div>
+  </div>
+  `,
+  methods: {
+    // 1. 在父组件中定义方法 show-balance
+    show_balance: function (data) {
+      this.show = true
+      console.log('data',data);
+    }
+  },
+  data: function () {
+    return {
+      show: false
+    }
+  }
+})
+
+Vue.component('show', {
+  template: `
+  <button @click="onClick()">显示余额</button>
+  `,
+  methods: {
+    onClick() {
+      // 3. 子组件中通过 $emit 触发当前实例上的事件 (事件名, 参数)
+      this.$emit('show-balance', {a: 1, b: 2})
+    }
+  }
+})
+
+var app = new Vue({
+  el: '#app'
+})
+```
+
+### 兄弟组件通讯
+
+```html
+<div id="app">
+  <huahua></huahua>
+  <shuandan></shuandan>
+</div>
+```
+
+```javascript
+// 利用一个空的 Vue 实例作为事件总线
+var Event = new Vue()
+
+Vue.component('huahua', {
+  template: `<div>我说: <input @keyup="on_change" v-model="i_said"></div>`,
+  methods: {
+    on_change: function () {
+      Event.$emit('huahua-said-something', this.i_said)
+    }
+  },
+  data: function () {
+    return {
+      i_said: ''
+    }
+  }
+})
+
+Vue.component('shuandan', {
+  template: `<div>花花说: {{huahua_said}}</div>`,
+  data: function () {
+    return {
+      huahua_said: ''
+    }
+  },
+  mounted: function () { // 初始化完毕节点--钩子
+    var that = this
+    Event.$on('huahua-said-something', function (data) {
+      that.huahua_said = data
+    })
+  }
+})
+new Vue({
+  el: '#app'
+})
+```
+
+### 内容分发 slot
+
+```html
+<div id="app">
+  <hello>
+    <!-- 如果只有一个slot插槽 那么不需要指定名称 -->
+    <p slot="插槽名称">我是额外的内容</p>
+  </hello>
+</div>
+
+<script>
+  new vue({
+  el : "#app",
+  components : {
+    hello : {
+      template : `
+          <div>
+            <p>我是子组件中的内容</p>
+            <slot name="名称"></slot>
+          </div>
+        `
+    }
+  }
+})
+</script>
+```
+
+### 获取组件 refs
+
+- vm.$refs 是一个对象，持有已经注册过 ref 的所有子组件
+- 在 HTML 中，添加 ref 属性，然后在 js 中通过 vm.$refs.属性 来获取
+- 如果获取的是一个组件，那么通过 ref 就能获取到子组件的 data 和 methods
+
+```html
+<div id="app">
+  <div ref="dv"></div>
+  <my res="my"></my>
+</div>
+
+<script>
+  new Vue({
+    el : "#app",
+    mounted() {
+      this.$refs.dv //获取到元素
+      this.$refs.my //获取到组件
+    },
+    components : {
+      my : {
+        template: `<a>sss</a>`
+      }
+    }
+  })
+</script>
 ```
 
 ## vue-cli
