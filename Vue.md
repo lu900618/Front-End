@@ -930,6 +930,126 @@ v-leave-to: 2.1.8版及以上 定义离开过渡的结束状态。在离开过�
 - destroyed()
   - Vue 实例销毁后调用。调用后，Vue 实例指示的所有东西都会解绑定，所有的事件监听器会被移除，所有的子实例也会被销毁
 
+## axios
+
+- 以Promise为基础的HTTP客户端，适用于浏览器和node.js
+- 封装ajax，用来发送请求，异步获取数据
+
+```javascript
+---
+// 配合 webpack 使用方式如下：
+import Vue from 'vue'
+import axios from 'axios'
+// 将 axios 添加到 Vue.prototype 中
+Vue.prototype.$axios = axios
+
+---
+// 在组件中使用：
+methods: {
+  getData() {
+    this.$axios.get('url')
+      .then(res => {})
+      .catch(err => {})
+  }
+}
+
+---
+// API使用方式：
+
+axios.get(url[, config])
+axios.post(url[, data[, config]])
+axios(url[, config])
+axios(config)
+```
+
+### get 请求
+
+```javascript
+const url = 'http://vue.studyit.io/api/getnewslist'
+
+// url中带有query参数
+axios.get('/user?id=89')
+  .then(function (response) {
+    console.log(response);
+  })
+  .catch(function (error) {
+    console.log(error);
+  });
+
+// url和参数分离，使用对象
+axios.get('/user', {
+  params: {
+    id: 12345
+  }
+})
+```
+
+### post请求
+
+- 默认情况下，axios会将js对象序列化为JSON对象。为了使用 `application/x-www-form-urlencode` 格式发送请求。
+
+```javascript
+// 使用 qs 包，处理将对象序列化为字符串
+// npm i -S qs
+// var qs = require('qs')
+import qs from 'qs'
+qs.stringify({ 'bar': 123 }) ===> "bar=123"
+axios.post('/foo', qs.stringify({ 'bar': 123 }))
+
+// 或者：
+axios.post('/foo', 'bar=123&age=19')
+```
+
+```javascript
+const url = 'http://vue.studyit.io/api/postcomment/17'
+axios.post(url, 'content=点个赞不过份')
+
+axios.post('/user', qs.stringify({
+    firstName: 'Fred',
+    lastName: 'Flintstone'
+  }))
+  .then(function (response) {
+    console.log(response)
+  })
+  .catch(function (error) {
+    console.log(error)
+  })
+```
+
+### 全局配置
+
+```javascript
+// 设置请求公共路径：
+axios.defaults.baseURL = 'http://vue.studyit.io'
+```
+
+### 拦截器
+
+- 拦截器会拦截发送的每一个请求，请求发送之前执行 `request` 中的函数，请求发送完成之后执行 `response` 中的函数。
+
+```javascript
+// 请求拦截器
+axios.interceptors.request.use(function (config) {
+    // 所有请求之前都要执行的操作
+
+    return config;
+  }, function (error) {
+    // 错误处理
+
+    return Promise.reject(error);
+  });
+
+// 响应拦截器
+axios.interceptors.response.use(function (response) {
+    // 所有请求完成后都要执行的操作
+
+    return response
+  }, function (error) {
+    // 错误处理
+    return Promise.reject(error);
+  })
+```
+
 ## vue-cli
 
 ### 安装脚手架
