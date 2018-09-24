@@ -1,0 +1,7 @@
+function sayHello(person) {
+    return 'Hello' + person;
+}
+var user = 'Tom';
+console.log(sayHello(user));
+var user2 = [];
+console.log(sayHello(user2));
