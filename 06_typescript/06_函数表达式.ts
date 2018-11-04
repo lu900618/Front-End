@@ -6,6 +6,10 @@ let mySum: (x: number, y: number) => number = function (x: number, y: number): n
   return x + y
 }
 
+let mySu2: (x: number, y: number) => number = (x: number, y: number): number => {
+  return x + y
+}
+
 interface searchFunc {
   (source: string, subString: string): boolean;
 }
