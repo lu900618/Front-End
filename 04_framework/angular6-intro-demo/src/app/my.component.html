@@ -1,0 +1,12 @@
+<h2>{{message}}</h2>
+<!-- [(ngModel)] 双向数据绑定 -->
+<input [(ngModel)]="message"/>
+
+<h3>{{ me.name }}</h3>
+
+<h3 *ngFor="let student of group">
+  {{ student.name }} is {{ student.age }} years old!
+</h3>
+
+<input type="text" #newStudentName/>
+<button (click)="addStudent(newStudentName.value, 32)">add</button>
