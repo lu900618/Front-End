@@ -1,0 +1,9 @@
+body{
+  background-color: pink;
+  color: red;
+}
+img{
+  background-image: url(../images/demo.png);
+  width:800px;
+  height:600px;
+}
