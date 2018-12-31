@@ -5,7 +5,7 @@
 *.iws
 
 **/node_modules
-
+**/dist
 # vscode
 .vscode
 
