@@ -45,10 +45,20 @@ module.exports = {
           {
             loader: 'url-loader', // 是指定使用的loader和loader的配置参数
             options: {
-              limit: 500 // 是把小于500B的文件打成Base64的格式，写入JS
+              limit: 500, // 是把小于500B的文件打成Base64的格式，写入JS
+              name: 'images/[name].[hash:8].[ext]'
             }
           }
         ]
+      },
+      {
+        test: /\.(js|jsx)$/,
+        use: [
+          {
+            loader: 'babel-loader'
+          }
+        ],
+        exclude: /node_modules/
       }
     ]
   },
